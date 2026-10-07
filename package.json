@@ -8,10 +8,11 @@
   },
   "scripts": {
     "dev": "node scripts/serve.mjs",
-    "check": "node --check site/assets/site.js && prettier --check .",
+    "check": "node scripts/sync-chrome.mjs --check && node --check site/assets/site.js && prettier --check .",
     "format": "prettier --write .",
     "assets:social": "node scripts/render-social.mjs",
-    "test": "playwright test"
+    "test": "playwright test",
+    "sync:chrome": "node scripts/sync-chrome.mjs --write"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
