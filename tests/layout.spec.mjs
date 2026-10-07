@@ -11,12 +11,28 @@ for (const width of widths) {
     await page.emulateMedia({ reducedMotion: "reduce" });
     for (const path of paths) {
       await page.goto(path);
+      const overflow = await page.evaluate(() => ({
+        viewport: innerWidth,
+        documentWidth: document.documentElement.scrollWidth,
+        offenders: [...document.querySelectorAll("body *")].flatMap((node) => {
+          if (node.scrollWidth <= node.clientWidth + 1) return [];
+          const style = getComputedStyle(node);
+          return [
+            {
+              tag: node.tagName,
+              class: node.className,
+              text: node.textContent.trim().slice(0, 100),
+              width: node.clientWidth,
+              scrollWidth: node.scrollWidth,
+              font: style.font,
+            },
+          ];
+        }),
+      }));
       expect(
-        await page.evaluate(
-          () => document.documentElement.scrollWidth <= innerWidth,
-        ),
-        path,
-      ).toBe(true);
+        overflow.documentWidth,
+        `${path}: ${JSON.stringify(overflow)}`,
+      ).toBeLessThanOrEqual(overflow.viewport);
       const orphanHeadings = await page
         .locator("h1, h2, h3")
         .evaluateAll((nodes) =>
