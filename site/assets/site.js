@@ -46,3 +46,22 @@ for (const button of document.querySelectorAll("[data-copy]")) {
     }
   });
 }
+
+// Enhance headings once as they enter view; navigation and content work without JS.
+// A reduced-motion preference cancels this enhancement, including live changes.
+const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+if ("IntersectionObserver" in window && !motionPreference.matches) {
+  const arrivals = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      if (!motionPreference.matches) entry.target.classList.add("is-arriving");
+      arrivals.unobserve(entry.target);
+    }
+  });
+  for (const heading of document.querySelectorAll(".section-heading")) {
+    arrivals.observe(heading);
+  }
+  motionPreference.addEventListener("change", (event) => {
+    if (event.matches) arrivals.disconnect();
+  });
+}

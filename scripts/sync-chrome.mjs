@@ -31,11 +31,10 @@ const footer = `<footer class="footer frame">
     <nav aria-label="Footer">
       <a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/pubship/pubship">GitHub</a>
     </nav>
-    <a class="footer-credit" href="https://vorobyov.me">Built by Dennis Vorobyov</a>
   </div>
   <div class="footer-notices">
     <p>PubShip is an independent open-source project and is not affiliated with, endorsed by, or sponsored by Google. Google, Google Play and Android are trademarks of Google LLC.</p>
-    <p>PubShip™ is a trademark of Denys Vorobyov.</p>
+    <p class="footer-trademark"><span>PubShip™ is a trademark of</span> <span><a href="https://vorobyov.me" aria-label="Denys Vorobyov, personal website">Denys Vorobyov</a>.</span></p>
   </div>
 </footer>`;
 

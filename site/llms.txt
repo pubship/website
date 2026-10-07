@@ -2,7 +2,7 @@
 
 > Independent, AGPL-3.0-only MCP software for Google Play developer workflows. Run locally with your own credentials. No project-run Google service.
 
-Version 0.24.0 is a release candidate pending publication. 170 enabled methods are implemented from 172 pinned definitions. Voided purchases are disabled by policy; subscription archiving is unsupported by Google. No real-provider verification is inferred from implementation.
+PubShip is published on PyPI and installs with `uvx pubship`. 170 enabled methods are implemented from 172 pinned definitions. Voided purchases are disabled by policy; subscription archiving is unsupported by Google. No real-provider verification is inferred from implementation.
 
 ## Documentation
 
