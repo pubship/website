@@ -656,9 +656,6 @@ h3 {
 }
 .start-section {
   background: #e9eee5;
-  /* Leave a viewport-sized runway, shared with the footer, so the last
-     anchor can reach the same position as earlier sections. */
-  min-height: calc(100svh - var(--section-space));
 }
 .start-section .section {
   border-top: 0;

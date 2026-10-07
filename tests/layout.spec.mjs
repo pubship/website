@@ -212,6 +212,28 @@ test("brand assets and social cards use local, complete metadata", async ({
   }
 });
 
+// Only the final anchor may run out of document before reaching its offset.
+// At narrow widths its taller content still permits the exact landing position.
+async function anchorLanding(page, target) {
+  return page
+    .locator(`#${target} .section-heading`)
+    .evaluate((heading, target) => {
+      const box = heading.getBoundingClientRect();
+      const maximum = document.documentElement.scrollHeight - innerHeight;
+      if (target === "start" && box.top + scrollY - 25 > maximum) {
+        const header = document
+          .querySelector("header.frame")
+          .getBoundingClientRect();
+        return (
+          scrollY === maximum &&
+          box.top >= Math.max(0, header.bottom) &&
+          box.bottom <= innerHeight
+        );
+      }
+      return Math.abs(box.top - 25) <= 2;
+    }, target);
+}
+
 for (const width of [768, 1024, 1440]) {
   test(`navigation lands on section content at ${width}px`, async ({
     page,
@@ -223,14 +245,7 @@ for (const width of [768, 1024, 1440]) {
         await page.goto(source);
         await page.locator(`header nav a[href="/#${target}"]`).click();
         await expect(page).toHaveURL(new RegExp(`#${target}$`));
-        await expect
-          .poll(async () => {
-            const box = await page
-              .locator(`#${target} .section-heading`)
-              .boundingBox();
-            return Math.abs(box.y - 25);
-          })
-          .toBeLessThanOrEqual(2);
+        await expect.poll(() => anchorLanding(page, target)).toBe(true);
       }
     }
   });
@@ -248,8 +263,40 @@ test("section links retain their landing position without JavaScript and with re
   const base = process.env.SITE_TEST_URL || "http://127.0.0.1:4173";
   for (const target of ["capabilities", "principles", "start"]) {
     await page.goto(`${base}/#${target}`);
-    const box = await page.locator(`#${target} .section-heading`).boundingBox();
-    expect(Math.abs(box.y - 25)).toBeLessThanOrEqual(2);
+    expect(await anchorLanding(page, target)).toBe(true);
   }
   await context.close();
+});
+
+test("final section uses the shared bottom spacing on a tall desktop viewport", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1080 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/#start");
+  const spacing = await page.locator("#start").evaluate((section) => {
+    const layout = section.querySelector(".section");
+    const sectionBox = section.getBoundingClientRect();
+    const layoutBox = layout.getBoundingClientRect();
+    const contentBottom = Math.max(
+      ...Array.from(
+        layout.children,
+        (child) => child.getBoundingClientRect().bottom,
+      ),
+    );
+    const sharedPadding = parseFloat(
+      getComputedStyle(document.querySelector("#capabilities")).paddingBottom,
+    );
+    return {
+      extraHeight: sectionBox.height - layoutBox.height,
+      bottomSpace: sectionBox.bottom - contentBottom,
+      sharedPadding,
+      scroll: scrollY,
+      maximum: document.documentElement.scrollHeight - innerHeight,
+    };
+  });
+  expect(spacing.extraHeight).toBe(0);
+  expect(spacing.bottomSpace).toBe(spacing.sharedPadding);
+  expect(spacing.scroll).toBe(spacing.maximum);
+  expect(await anchorLanding(page, "start")).toBe(true);
 });
