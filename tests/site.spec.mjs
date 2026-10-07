@@ -290,8 +290,8 @@ test("all pages retain legal notices and no hosted sign-in", async ({
     await expect(page.locator("footer")).toContainText(
       "PubShip is an independent open-source project",
     );
-    await expect(page.locator("footer")).toContainText(
-      "PubShip™ is a trademark of DV",
+    await expect(page.locator(".footer-trademark")).toHaveText(
+      "PubShip™ is a trademark of Denys Vorobyov.",
     );
     await expect(page.locator("footer")).not.toContainText("Built by Dennis");
     await expect(page.locator(".footer-trademark a")).toHaveAttribute(

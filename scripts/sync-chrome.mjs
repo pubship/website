@@ -34,7 +34,7 @@ const footer = `<footer class="footer frame">
   </div>
   <div class="footer-notices">
     <p>PubShip is an independent open-source project and is not affiliated with, endorsed by, or sponsored by Google. Google, Google Play and Android are trademarks of Google LLC.</p>
-    <p class="footer-trademark"><span>PubShip™ is a trademark of</span> <a href="https://vorobyov.me" aria-label="DV, personal website">DV</a></p>
+    <p class="footer-trademark"><span>PubShip™ is a trademark of</span> <span><a href="https://vorobyov.me" aria-label="Denys Vorobyov, personal website">Denys Vorobyov</a>.</span></p>
   </div>
 </footer>`;
 

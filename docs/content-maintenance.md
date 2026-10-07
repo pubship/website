@@ -8,7 +8,7 @@ Check all pages at mobile and desktop widths, keyboard behavior, accessibility, 
 
 ## 0.24.1 client-distribution review
 
-The package release adds client manifests, a logo and an agent installation guide; it does not change the 170 enabled methods, local-first model or permission boundaries. The website's `uvx pubship` installation remains correct for the published package. Keep the displayed 0.24.0 reference until 0.24.1 is published; manifest availability is not marketplace acceptance. The stale publication-pending sentence in llms.txt is corrected here. Footer identity is abbreviated to linked DV at the owner's request; the controller and license notices retain the legal name.
+The package release adds client manifests, a logo and an agent installation guide; it does not change the 170 enabled methods, local-first model or permission boundaries. The website's `uvx pubship` installation remains correct for the published package. Keep the displayed 0.24.0 reference until 0.24.1 is published; manifest availability is not marketplace acceptance. The stale publication-pending sentence in llms.txt is corrected here. Every footer states exactly "PubShip™ is a trademark of Denys Vorobyov." The legal name links to the owner's personal website; initials must not replace it.
 
 Navigation targets align section content below the viewport edge using the shared spacing scale, including direct links from policy pages. Section headings receive a short, once-only entrance; content stays visible without JavaScript and reduced motion disables animation and smooth scrolling.
 
