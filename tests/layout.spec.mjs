@@ -17,6 +17,32 @@ for (const width of widths) {
         ),
         path,
       ).toBe(true);
+      const orphanHeadings = await page
+        .locator("h1, h2, h3")
+        .evaluateAll((nodes) =>
+          nodes.flatMap((node) => {
+            const lines = new Map();
+            const walker = document.createTreeWalker(
+              node,
+              NodeFilter.SHOW_TEXT,
+            );
+            while (walker.nextNode()) {
+              const text = walker.currentNode;
+              for (const word of text.textContent.matchAll(/\S+/g)) {
+                const range = document.createRange();
+                range.setStart(text, word.index);
+                range.setEnd(text, word.index + word[0].length);
+                const top = Math.round(range.getBoundingClientRect().top);
+                lines.set(top, (lines.get(top) || 0) + 1);
+              }
+            }
+            const counts = [...lines.values()];
+            return counts.length > 1 && counts.at(-1) === 1
+              ? [node.textContent.trim()]
+              : [];
+          }),
+        );
+      expect(orphanHeadings, `${path} single-word heading endings`).toEqual([]);
       const header = await page.locator("header.frame").boundingBox();
       const footer = await page.locator("footer.frame").boundingBox();
       const content = await page
