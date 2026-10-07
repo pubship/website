@@ -960,7 +960,7 @@ h3 {
     padding-bottom: 32px;
   }
   .hero h1 {
-    font-size: clamp(36px, 10.5vw, 55px);
+    font-size: clamp(32px, 9.6vw, 50px);
     line-height: 1.15;
     letter-spacing: -2.7px;
     margin-bottom: 22px;
@@ -1003,7 +1003,7 @@ h3 {
     letter-spacing: 1px;
   }
   .section-heading h2 {
-    font-size: clamp(29px, 8.8vw, 33px);
+    font-size: clamp(26px, calc(8.8vw - 3px), 33px);
     letter-spacing: -1.3px;
     margin-bottom: 20px;
   }
