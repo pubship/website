@@ -1,0 +1,4 @@
+Contact: mailto:security@pubship.dev
+Expires: 2027-10-01T00:00:00Z
+Preferred-Languages: en
+Canonical: https://pubship.dev/.well-known/security.txt

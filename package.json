@@ -1,0 +1,21 @@
+{
+  "name": "@pubship/website",
+  "version": "0.24.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "check": "node --check site/assets/site.js && prettier --check .",
+    "format": "prettier --write .",
+    "assets:social": "node scripts/render-social.mjs",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.63.0",
+    "prettier": "3.9.9"
+  }
+}

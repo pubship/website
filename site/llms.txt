@@ -1,0 +1,15 @@
+# PubShip
+
+> Independent, AGPL-3.0-only MCP software for Google Play developer workflows. Run locally with your own credentials. No project-run Google service.
+
+Version 0.24.0 is a release candidate pending publication. 170 enabled methods are implemented from 172 pinned definitions. Voided purchases are disabled by policy; subscription archiving is unsupported by Google. No real-provider verification is inferred from implementation.
+
+## Documentation
+
+- [Source and setup](https://github.com/pubship/pubship): Local use with uvx pubship after package publication.
+- [API catalog](https://github.com/pubship/pubship/blob/main/docs/api-methods.md): Enabled and deliberately unavailable operations.
+- [Clients](https://github.com/pubship/pubship/blob/main/docs/clients.md): Claude Code, Codex and generic MCP clients.
+- [Privacy](https://pubship.dev/privacy/): Static website privacy.
+- [Terms](https://pubship.dev/terms/): License and trademark notices.
+
+No Google endorsement. The project does not receive your Google credentials. Outside code contributions are not accepted; issues describing problems in words are welcome.
