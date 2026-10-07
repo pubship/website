@@ -291,7 +291,12 @@ test("all pages retain legal notices and no hosted sign-in", async ({
       "PubShip is an independent open-source project",
     );
     await expect(page.locator("footer")).toContainText(
-      "PubShip™ is a trademark of Denys Vorobyov.",
+      "PubShip™ is a trademark of DV",
+    );
+    await expect(page.locator("footer")).not.toContainText("Built by Dennis");
+    await expect(page.locator(".footer-trademark a")).toHaveAttribute(
+      "href",
+      "https://vorobyov.me",
     );
     await expect(page.locator('a[href*="/google/callback"], form')).toHaveCount(
       0,

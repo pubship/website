@@ -76,8 +76,11 @@ for (const width of widths) {
       if (width >= 1024) {
         const identity = await page.locator(".footer-identity").boundingBox();
         const legal = await page.locator(".footer-notices").boundingBox();
-        expect(Math.abs(identity.y - legal.y), path).toBeLessThan(1);
-        expect(legal.x).toBeGreaterThan(identity.x + identity.width);
+        const brand = await page.locator("footer .brand-lockup").boundingBox();
+        const nav = await page.locator("footer nav").boundingBox();
+        expect(Math.abs(brand.y - nav.y), path).toBeLessThan(1);
+        expect(Math.abs(identity.x - legal.x), path).toBeLessThan(1);
+        expect(legal.y, path).toBeGreaterThan(identity.y + identity.height);
       }
       // Test every visible navigation/control target, not only CSS declarations.
       const small = await page.locator("a, button").evaluateAll((nodes) =>
@@ -207,4 +210,46 @@ test("brand assets and social cards use local, complete metadata", async ({
     expect(png.readUInt32BE(16)).toBe(width);
     expect(png.readUInt32BE(20)).toBe(height);
   }
+});
+
+for (const width of [768, 1024, 1440]) {
+  test(`navigation lands on section content at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 800 });
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    for (const source of ["/", "/privacy/", "/terms/"]) {
+      for (const target of ["capabilities", "principles", "start"]) {
+        await page.goto(source);
+        await page.locator(`header nav a[href="/#${target}"]`).click();
+        await expect(page).toHaveURL(new RegExp(`#${target}$`));
+        await expect
+          .poll(async () => {
+            const box = await page
+              .locator(`#${target} .section-heading`)
+              .boundingBox();
+            return Math.abs(box.y - 25);
+          })
+          .toBeLessThanOrEqual(2);
+      }
+    }
+  });
+}
+
+test("section links retain their landing position without JavaScript and with reduced motion", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    reducedMotion: "reduce",
+    viewport: { width: 375, height: 800 },
+  });
+  const page = await context.newPage();
+  const base = process.env.SITE_TEST_URL || "http://127.0.0.1:4173";
+  for (const target of ["capabilities", "principles", "start"]) {
+    await page.goto(`${base}/#${target}`);
+    const box = await page.locator(`#${target} .section-heading`).boundingBox();
+    expect(Math.abs(box.y - 25)).toBeLessThanOrEqual(2);
+  }
+  await context.close();
 });
