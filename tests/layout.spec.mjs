@@ -480,3 +480,49 @@ test("late font completion cancels scripted anchor repair after wheel input", as
     releaseFonts();
   }
 });
+
+test("header and footer symbol matches the wordmark capital height and baseline", async ({
+  page,
+}) => {
+  for (const width of [375, 1440]) {
+    await page.setViewportSize({ width, height: 1080 });
+    for (const path of paths) {
+      await page.goto(path);
+      await page.evaluate(() => document.fonts.ready);
+      const metrics = await page.locator(".brand-lockup").evaluateAll((links) =>
+        links.map((link) => {
+          const image = link.querySelector("img").getBoundingClientRect();
+          const word = link.querySelector("span");
+          const box = word.getBoundingClientRect();
+          const style = getComputedStyle(word);
+          const canvas = document.createElement("canvas").getContext("2d");
+          canvas.font = style.font;
+          const capital = canvas.measureText("P");
+          const baseline =
+            box.top +
+            (parseFloat(style.lineHeight) -
+              capital.fontBoundingBoxAscent -
+              capital.fontBoundingBoxDescent) /
+              2 +
+            capital.fontBoundingBoxAscent;
+          // Final supplied geometry: P height 340, total height 352.
+          const symbolHeight = (image.height * 340) / 352;
+          return {
+            symbolHeight,
+            capitalHeight: capital.actualBoundingBoxAscent,
+            baselineError: Math.abs(image.top + symbolHeight - baseline),
+            leftError: Math.abs(image.left - link.getBoundingClientRect().left),
+            targetHeight: link.getBoundingClientRect().height,
+          };
+        }),
+      );
+      expect(metrics).toHaveLength(2);
+      for (const metric of metrics) {
+        expect(metric.symbolHeight).toBeCloseTo(metric.capitalHeight, 0);
+        expect(metric.baselineError).toBeLessThan(1);
+        expect(metric.leftError).toBeLessThan(1);
+        expect(metric.targetHeight).toBeGreaterThanOrEqual(44);
+      }
+    }
+  }
+});
