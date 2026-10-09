@@ -1,0 +1,34 @@
+[
+  {
+    "file": "bricolage-grotesque.woff2",
+    "family": "Bricolage Grotesque",
+    "weight": "500 700",
+    "source": "https://fonts.gstatic.com/s/bricolagegrotesque/v9/3y9K6as8bTXq_nANBjzKo3IeZx8z6up5BeSl9D4dj_x9PpZBMlGIInHWVyNJ.woff2",
+    "sha256": "85f55a58a31e61a2e19e8bb25fed503181bf2a6b4cab76c589992cfaac377447",
+    "bytes": 76868
+  },
+  {
+    "file": "ibm-plex-mono.woff2",
+    "family": "IBM Plex Mono",
+    "weight": "400",
+    "source": "https://fonts.gstatic.com/s/ibmplexmono/v20/-F63fjptAgt5VM-kVkqdyU8n1i8q131nj-o.woff2",
+    "sha256": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac",
+    "bytes": 10052
+  },
+  {
+    "file": "ibm-plex-mono-medium.woff2",
+    "family": "IBM Plex Mono",
+    "weight": "500",
+    "source": "https://fonts.gstatic.com/s/ibmplexmono/v20/-F6qfjptAgt5VM-kVkqdyU8n3twJwlBFgsAXHNk.woff2",
+    "sha256": "a76f53ca6612e7b3828eec2311098675b7f9849ae4169a8bcef6302aec02a6c0",
+    "bytes": 10060
+  },
+  {
+    "file": "ibm-plex-sans.woff2",
+    "family": "IBM Plex Sans",
+    "weight": "400 600",
+    "source": "https://fonts.gstatic.com/s/ibmplexsans/v23/zYXzKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1syxeKYbSB4Zh.woff2",
+    "sha256": "056e4e2459f57a0033c8c9c844ff19d6e42ac8602027803d4345823bcc939818",
+    "bytes": 40240
+  }
+]

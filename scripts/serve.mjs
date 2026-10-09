@@ -13,6 +13,7 @@ const types = {
   ".png": "image/png",
   ".xml": "application/xml",
   ".txt": "text/plain; charset=utf-8",
+  ".woff2": "font/woff2",
 };
 
 const server = createServer(async (request, response) => {

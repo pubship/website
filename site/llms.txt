@@ -6,9 +6,11 @@ PubShip is published on PyPI and installs with `uvx pubship`. 170 enabled method
 
 ## Documentation
 
-- [Source and setup](https://github.com/pubship/pubship): Local use with uvx pubship after package publication.
+- [Setup guide](https://pubship.dev/get-started/): Install the published package, configure your own Google access, connect a client and verify a first read.
+- [Permissions and data flow](https://pubship.dev/permissions/): Default reads, separate opt-ins, staging versus live changes, and own-account self-hosting.
+- [Source](https://github.com/pubship/pubship): Implementation, issues and release notes.
 - [API catalog](https://github.com/pubship/pubship/blob/main/docs/api-methods.md): Enabled and deliberately unavailable operations.
-- [Clients](https://github.com/pubship/pubship/blob/main/docs/clients.md): Claude Code, Codex and generic MCP clients.
+- [Clients](https://github.com/pubship/pubship/blob/main/docs/clients.md): Claude Code, Codex, Cursor, Gemini CLI and generic MCP clients.
 - [Privacy](https://pubship.dev/privacy/): Static website privacy.
 - [Terms](https://pubship.dev/terms/): License and trademark notices.
 

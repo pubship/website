@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f4ec" />
+    <title>Get started · PubShip</title>
+    <meta
+      name="description"
+      content="Install PubShip locally, configure your Google access and connect your MCP client for a first read."
+    />
+    <link rel="canonical" href="https://pubship.dev/get-started/" />
+    <!-- shared:metadata -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PubShip" />
+    <meta property="og:title" content="Get started · PubShip" />
+    <meta
+      property="og:description"
+      content="Install PubShip locally, configure your Google access and connect your MCP client for a first read."
+    />
+    <meta property="og:url" content="https://pubship.dev/get-started/" />
+    <meta property="og:image" content="https://pubship.dev/assets/social.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="PubShip. Bring your release workflow into your AI workspace."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Get started · PubShip" />
+    <meta
+      name="twitter:description"
+      content="Install PubShip locally, configure your Google access and connect your MCP client for a first read."
+    />
+    <meta
+      name="twitter:image"
+      content="https://pubship.dev/assets/social.png"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="PubShip. Bring your release workflow into your AI workspace."
+    />
+    <link rel="icon" href="/assets/mark.svg" type="image/svg+xml" sizes="any" />
+    <link
+      rel="icon"
+      href="/assets/favicon-32.png"
+      type="image/png"
+      sizes="32x32"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="/assets/apple-touch-icon.png"
+      sizes="180x180"
+    />
+    <!-- /shared:metadata -->
+    <link rel="stylesheet" href="/assets/site.css" />
+    <script src="/assets/site.js" defer></script>
+    <link rel="describedby" href="/llms.txt" type="text/plain" />
+  </head>
+  <body>
+    <a class="skip" href="#main" tabindex="0">Skip to content</a>
+    <header class="header frame">
+      <a class="brand-lockup" href="/" aria-label="PubShip home"
+        ><img src="/assets/mark.svg" alt="" width="32" height="32" /><span
+          >PubShip</span
+        ></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="/#workflows">Workflows</a>
+        <a href="/get-started/" aria-current="page">Setup</a>
+        <a
+          href="https://github.com/pubship/pubship/tree/main/docs"
+          aria-label="Docs, on GitHub"
+          >Docs <span aria-hidden="true">↗</span></a
+        >
+        <a
+          class="header-github"
+          href="https://github.com/pubship/pubship"
+          aria-label="GitHub repository"
+          >GitHub <span aria-hidden="true">↗</span></a
+        >
+      </nav>
+    </header>
+    <main id="main" tabindex="-1" class="main-content">
+      <section aria-labelledby="start-title" class="setup-hero">
+        <div class="content-frame">
+          <p class="section-eyebrow">
+            <span aria-hidden="true" class="section-square"></span>Setup guide
+          </p>
+          <h1 id="start-title" class="page-title">
+            From install to your first read.
+          </h1>
+          <p class="page-intro">
+            PubShip runs on your computer with your own Google credentials. This
+            is the shortest path. Every step links to the full details on
+            GitHub.
+          </p>
+          <ul aria-label="You will need" class="prerequisites">
+            <li class="prerequisite">Python 3.11 or later</li>
+            <li class="prerequisite">uv</li>
+            <li class="prerequisite">An MCP client</li>
+            <li class="prerequisite">Access to your app in Play Console</li>
+          </ul>
+        </div>
+      </section>
+
+      <div class="steps-spacing">
+        <ol class="steps-list">
+          <li id="step-1" class="setup-step">
+            <div class="setup-step-intro">
+              <span aria-hidden="true" class="setup-step-number">1</span>
+              <h2 class="setup-step-title">Install uv</h2>
+              <p class="setup-step-copy">
+                PubShip is published on PyPI and runs with uvx, which comes with
+                uv.
+              </p>
+              <a
+                href="https://docs.astral.sh/uv/getting-started/installation/"
+                class="setup-doc-link hover-accent"
+                >uv installation guide<span aria-hidden="true">↗</span></a
+              >
+            </div>
+            <div class="setup-step-content">
+              <div class="code-block">
+                <div class="code-toolbar">
+                  <span>Check that uv is available</span
+                  ><button
+                    type="button"
+                    data-copy="code-6"
+                    aria-label="Copy uv check command"
+                    hidden
+                  >
+                    Copy
+                  </button>
+                </div>
+                <pre tabindex="0"><code id="code-6">uv --version</code></pre>
+                <p class="copy-status" role="status" aria-live="polite"></p>
+              </div>
+              <p class="setup-note">
+                Desktop clients can start with a different PATH from your
+                terminal. Restart your client after installing uv.
+              </p>
+            </div>
+          </li>
+
+          <li id="step-2" class="setup-step">
+            <div class="setup-step-intro">
+              <span aria-hidden="true" class="setup-step-number">2</span>
+              <h2 class="setup-step-title">Prepare your Google access</h2>
+              <p class="setup-step-copy">
+                Use a service account you control. Grant only the access you
+                need.
+              </p>
+              <a
+                href="https://github.com/pubship/pubship/blob/main/docs/setup.md"
+                class="setup-doc-link hover-accent"
+                >Google access guide, including gcloud and ADC<span
+                  aria-hidden="true"
+                  >↗</span
+                ></a
+              >
+            </div>
+            <div class="access-content">
+              <ol class="access-checklist">
+                <li class="access-checklist-row">
+                  <span aria-hidden="true" class="access-letter">a</span
+                  ><span
+                    >Enable the
+                    <strong class="strong-ink"
+                      >Google Play Android Developer API</strong
+                    >
+                    in your Cloud project.</span
+                  >
+                </li>
+                <li class="access-checklist-row">
+                  <span aria-hidden="true" class="access-letter">b</span
+                  ><span
+                    >Create a service account, or reuse one you control.</span
+                  >
+                </li>
+                <li class="access-checklist-row">
+                  <span aria-hidden="true" class="access-letter">c</span
+                  ><span
+                    >In Play Console, open
+                    <strong class="strong-ink">Users and permissions</strong>,
+                    invite its email and grant access to your app. Read-only app
+                    information is enough to start.</span
+                  >
+                </li>
+                <li class="access-checklist-row">
+                  <span aria-hidden="true" class="access-letter">d</span
+                  ><span
+                    >Save its JSON key on this computer, outside any repository,
+                    and note the absolute path.</span
+                  >
+                </li>
+              </ol>
+              <p class="credential-warning">
+                <span aria-hidden="true" class="warning-symbol">!</span
+                ><span
+                  >Never paste the key's contents into a chat, a client setting,
+                  an issue or a website. PubShip only needs the file path.</span
+                >
+              </p>
+              <p class="setup-note">
+                For Android vitals, also enable the Google Play Developer
+                Reporting API.
+              </p>
+            </div>
+          </li>
+
+          <li id="step-3" class="setup-client-step">
+            <div class="setup-client-heading">
+              <div class="setup-client-intro">
+                <span aria-hidden="true" class="setup-step-number">3</span>
+                <h2 class="setup-step-title">Add PubShip to your client</h2>
+              </div>
+              <p class="setup-client-copy">
+                Set the key path and your app allowlist for the PubShip process.
+                GOOGLE_PLAY_PACKAGES limits PubShip's requests; it does not
+                change Google permissions.
+              </p>
+            </div>
+            <div class="client-tabs" data-tabs="">
+              <div
+                data-tablist=""
+                aria-label="MCP client"
+                class="client-tablist"
+                hidden=""
+              >
+                <button
+                  type="button"
+                  id="client-tab-claude"
+                  data-panel="client-panel-claude"
+                >
+                  Claude Code</button
+                ><button
+                  type="button"
+                  id="client-tab-codex"
+                  data-panel="client-panel-codex"
+                >
+                  Codex</button
+                ><button
+                  type="button"
+                  id="client-tab-cursor"
+                  data-panel="client-panel-cursor"
+                >
+                  Cursor</button
+                ><button
+                  type="button"
+                  id="client-tab-gemini"
+                  data-panel="client-panel-gemini"
+                >
+                  Gemini CLI</button
+                ><button
+                  type="button"
+                  id="client-tab-generic"
+                  data-panel="client-panel-generic"
+                >
+                  Any stdio client
+                </button>
+              </div>
+              <section
+                id="client-panel-claude"
+                data-tab-panel=""
+                class="client-panel"
+              >
+                <h3 class="panel-heading">Claude Code</h3>
+                <div class="client-layout">
+                  <div class="client-code">
+                    <div class="code-block">
+                      <div class="code-toolbar">
+                        <span
+                          >First, in the shell that launches Claude Code</span
+                        ><button
+                          type="button"
+                          data-copy="code-7"
+                          aria-label="Copy environment variables"
+                          hidden
+                        >
+                          Copy
+                        </button>
+                      </div>
+                      <pre
+                        tabindex="0"
+                      ><code id="code-7">export GOOGLE_APPLICATION_CREDENTIALS=/absolute/private/path/service-account.json
+export GOOGLE_PLAY_PACKAGES=com.example.app</code></pre>
+                      <p
+                        class="copy-status"
+                        role="status"
+                        aria-live="polite"
+                      ></p>
+                    </div>
+                    <div class="code-block">
+                      <div class="code-toolbar">
+                        <span>Add the server</span
+                        ><button
+                          type="button"
+                          data-copy="code-8"
+                          aria-label="Copy Claude Code configuration"
+                          hidden
+                        >
+                          Copy
+                        </button>
+                      </div>
+                      <pre
+                        tabindex="0"
+                      ><code id="code-8">claude mcp add --transport stdio pubship -- uvx pubship</code></pre>
+                      <p
+                        class="copy-status"
+                        role="status"
+                        aria-live="polite"
+                      ></p>
+                    </div>
+                  </div>
+                  <div class="client-note">
+                    <p class="badge">Documented command</p>
+                    <p>
+                      Set GOOGLE_APPLICATION_CREDENTIALS and
+                      GOOGLE_PLAY_PACKAGES in the shell that launches Claude
+                      Code, then run /mcp to check the connection.
+                    </p>
+                    <a href="https://github.com/pubship/pubship#claude-code"
+                      >Full instructions on GitHub
+                      <span aria-hidden="true">↗</span></a
+                    >
+                  </div>
+                </div>
+              </section>
+              <section
+                id="client-panel-codex"
+                data-tab-panel=""
+                class="client-panel"
+              >
+                <h3 class="panel-heading">Codex</h3>
+                <div class="client-layout">
+                  <div class="client-code">
+                    <div class="code-block">
+                      <div class="code-toolbar">
+                        <span>First, in the shell that launches Codex</span
+                        ><button
+                          type="button"
+                          data-copy="code-9"
+                          aria-label="Copy environment variables"
+                          hidden
+                        >
+                          Copy
+                        </button>
+                      </div>
+                      <pre
+                        tabindex="0"
+                      ><code id="code-9">export GOOGLE_APPLICATION_CREDENTIALS=/absolute/private/path/service-account.json
+export GOOGLE_PLAY_PACKAGES=com.example.app</code></pre>
+                      <p
+                        class="copy-status"
+                        role="status"
+                        aria-live="polite"
+                      ></p>
+                    </div>
+                    <div class="code-block">
+                      <div class="code-toolbar">
+                        <span>Add the server</span
+                        ><button
+                          type="button"
+                          data-copy="code-10"
+                          aria-label="Copy Codex configuration"
+                          hidden
+                        >
+                          Copy
+                        </button>
+                      </div>
+                      <pre
+                        tabindex="0"
+                      ><code id="code-10">codex mcp add pubship -- uvx pubship
+codex mcp list</code></pre>
+                      <p
+                        class="copy-status"
+                        role="status"
+                        aria-live="polite"
+                      ></p>
+                    </div>
+                  </div>
+                  <div class="client-note">
+                    <p class="badge">Documented command</p>
+                    <p>
+                      Set GOOGLE_APPLICATION_CREDENTIALS and
+                      GOOGLE_PLAY_PACKAGES in the shell that launches Codex.
+                      Desktop apps can use a different PATH from your terminal.
+                    </p>
+                    <a href="https://github.com/pubship/pubship#codex"
+                      >Full instructions on GitHub
+                      <span aria-hidden="true">↗</span></a
+                    >
+                  </div>
+                </div>
+              </section>
+              <section
+                id="client-panel-cursor"
+                data-tab-panel=""
+                class="client-panel"
+              >
+                <h3 class="panel-heading">Cursor</h3>
+                <div class="client-layout">
+                  <div class="client-code">
+                    <dl class="client-settings">
+                      <div>
+                        <dt>Service account key file</dt>
+                        <dd>
+                          <code
+                            >/absolute/private/path/service-account.json</code
+                          >
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Package names</dt>
+                        <dd><code>com.example.app</code></dd>
+                      </div>
+                    </dl>
+                  </div>
+                  <div class="client-note">
+                    <p class="badge">Plugin manifest</p>
+                    <p>
+                      Not a Cursor marketplace listing. The plugin starts uvx
+                      pubship. Enter the key file path, never the key contents.
+                    </p>
+                    <a
+                      href="https://github.com/pubship/pubship/blob/main/docs/clients.md#cursor-plugin"
+                      >Full instructions on GitHub
+                      <span aria-hidden="true">↗</span></a
+                    >
+                  </div>
+                </div>
+              </section>
+              <section
+                id="client-panel-gemini"
+                data-tab-panel=""
+                class="client-panel"
+              >
+                <h3 class="panel-heading">Gemini CLI</h3>
+                <div class="client-layout">
+                  <div class="client-code">
+                    <div class="code-block">
+                      <div class="code-toolbar">
+                        <span>Add the server</span
+                        ><button
+                          type="button"
+                          data-copy="code-11"
+                          aria-label="Copy Gemini CLI configuration"
+                          hidden
+                        >
+                          Copy
+                        </button>
+                      </div>
+                      <pre
+                        tabindex="0"
+                      ><code id="code-11">gemini extensions install https://github.com/pubship/pubship</code></pre>
+                      <p
+                        class="copy-status"
+                        role="status"
+                        aria-live="polite"
+                      ></p>
+                    </div>
+                  </div>
+                  <div class="client-note">
+                    <p class="badge">Extension manifest</p>
+                    <p>
+                      Native installation not verified. Enter your key file path
+                      and package names when prompted, then restart Gemini CLI.
+                    </p>
+                    <a
+                      href="https://github.com/pubship/pubship/blob/main/docs/clients.md#gemini-cli"
+                      >Full instructions on GitHub
+                      <span aria-hidden="true">↗</span></a
+                    >
+                  </div>
+                </div>
+              </section>
+              <section
+                id="client-panel-generic"
+                data-tab-panel=""
+                class="client-panel"
+              >
+                <h3 class="panel-heading">Any stdio client</h3>
+                <div class="client-layout">
+                  <div class="client-code">
+                    <div class="code-block">
+                      <div class="code-toolbar">
+                        <span>MCP configuration (JSON)</span
+                        ><button
+                          type="button"
+                          data-copy="code-12"
+                          aria-label="Copy Any stdio client configuration"
+                          hidden
+                        >
+                          Copy
+                        </button>
+                      </div>
+                      <pre tabindex="0"><code id="code-12">{
+  "mcpServers": {
+    "pubship": {
+      "command": "uvx",
+      "args": ["pubship"],
+      "env": {
+        "GOOGLE_APPLICATION_CREDENTIALS": "/absolute/private/path/service-account.json",
+        "GOOGLE_PLAY_PACKAGES": "com.example.app"
+      }
+    }
+  }
+}</code></pre>
+                      <p
+                        class="copy-status"
+                        role="status"
+                        aria-live="polite"
+                      ></p>
+                    </div>
+                  </div>
+                  <div class="client-note">
+                    <p class="badge">Standard stdio configuration</p>
+                    <p>
+                      Command uvx, argument pubship. Keep shell syntax out of
+                      the command field.
+                    </p>
+                    <a
+                      href="https://github.com/pubship/pubship#generic-mcp-harness"
+                      >Full instructions on GitHub
+                      <span aria-hidden="true">↗</span></a
+                    >
+                  </div>
+                </div>
+              </section>
+            </div>
+          </li>
+
+          <li id="step-4" class="verify-step">
+            <div class="setup-step-intro">
+              <span aria-hidden="true" class="verify-number">4</span>
+              <h2 class="verify-title">Verify, then make a first read</h2>
+              <p class="verify-copy">
+                The check needs no credentials and makes no Google call. It
+                prints the PubShip name and installed version.
+              </p>
+            </div>
+            <div class="verify-content">
+              <div class="verify-code-frame">
+                <div class="code-block">
+                  <div class="code-toolbar">
+                    <span>Check the installation</span
+                    ><button
+                      type="button"
+                      data-copy="code-13"
+                      aria-label="Copy check command"
+                      hidden
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre
+                    tabindex="0"
+                  ><code id="code-13">uvx pubship --check</code></pre>
+                  <p class="copy-status" role="status" aria-live="polite"></p>
+                </div>
+              </div>
+              <p class="verify-instruction">
+                Then confirm your client lists PubShip tools, and ask:
+              </p>
+              <p class="first-query">
+                Show the production releases for com.example.app. Make no
+                changes.
+              </p>
+              <p class="verify-note">
+                Expect a list_releases call with each release's name, version
+                codes and lifecycle state. Waiting on Play Console access? Ask
+                for two entries from the API catalog; it needs no credentials.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <section aria-labelledby="stuck-title" class="inset-section">
+        <div class="content-frame">
+          <div class="section-heading-row">
+            <h2 id="stuck-title" class="page-section-title">
+              Stuck? Check these first.
+            </h2>
+            <a
+              href="https://github.com/pubship/pubship/blob/main/docs/setup.md#troubleshooting"
+              class="page-doc-link hover-accent"
+              >Full troubleshooting table<span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <dl class="troubleshooting-grid">
+            <div class="troubleshooting-card">
+              <dt class="troubleshooting-term">Authentication failed</dt>
+              <dd class="troubleshooting-copy">
+                Check the key path, the selected account and any impersonation
+                permission. Restart the client after changes.
+              </dd>
+            </div>
+            <div class="troubleshooting-card">
+              <dt class="troubleshooting-term">HTTP 403</dt>
+              <dd class="troubleshooting-copy">
+                The API may be off, or the service account lacks app access in
+                Play Console.
+              </dd>
+            </div>
+            <div class="troubleshooting-card">
+              <dt class="troubleshooting-term">HTTP 429</dt>
+              <dd class="troubleshooting-copy">
+                Google's quota was reached. Retry later instead of looping.
+              </dd>
+            </div>
+            <div class="troubleshooting-card">
+              <dt class="troubleshooting-term">No rows for a date</dt>
+              <dd class="troubleshooting-copy">
+                Missing rows are not zero. Check that report's coverage before
+                filling gaps.
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section aria-labelledby="next-title" class="page-section-spacing">
+        <div class="content-frame">
+          <h2 id="next-title" class="page-section-title">Where to go next</h2>
+          <div class="next-grid">
+            <a href="/permissions/" class="next-card-primary hover-next-primary"
+              ><span class="next-card-title">Permissions and data flow</span
+              ><span class="next-card-copy"
+                >What PubShip can reach, and who decides.</span
+              ><span class="next-card-label">Read it →</span></a
+            >
+            <a
+              href="https://github.com/pubship/pubship/blob/main/docs/listing-staging.md"
+              class="next-card hover-next-card"
+              ><span class="next-card-title">Enable changes</span
+              ><span class="next-card-description"
+                >Opt in to listing staging for one app.</span
+              ><span class="next-card-link"
+                >Listing staging on GitHub ↗</span
+              ></a
+            >
+            <a
+              href="https://github.com/pubship/pubship/blob/main/docs/hosting.md"
+              class="next-card hover-next-card"
+              ><span class="next-card-title">Self-host (advanced)</span
+              ><span class="next-card-description"
+                >Only for your own Google accounts, on infrastructure you
+                control.</span
+              ><span class="next-card-link"
+                >Self-host guide on GitHub ↗</span
+              ></a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer frame">
+      <div class="footer-top">
+        <div class="footer-intro">
+          <a class="brand-lockup" href="/" aria-label="PubShip home"
+            ><img src="/assets/mark.svg" alt="" width="32" height="32" /><span
+              >PubShip</span
+            ></a
+          >
+          <p>
+            Google Play developer workflows in your MCP client. Runs on your
+            computer with your own credentials.
+          </p>
+        </div>
+        <nav aria-label="Use">
+          <h2>Use</h2>
+          <a href="/#workflows">Workflows</a
+          ><a href="/get-started/">Setup guide</a
+          ><a href="/permissions/">Permissions</a>
+        </nav>
+        <nav aria-label="Project">
+          <h2>Project</h2>
+          <a href="https://github.com/pubship/pubship">GitHub ↗</a
+          ><a href="https://github.com/pubship/pubship/releases">Releases ↗</a
+          ><a href="https://pypi.org/project/pubship/">PyPI ↗</a
+          ><a href="https://github.com/pubship/pubship/issues/new/choose"
+            >Report an issue ↗</a
+          >
+        </nav>
+        <nav aria-label="Legal">
+          <h2>Legal</h2>
+          <a href="/privacy/">Privacy</a><a href="/terms/">Terms</a
+          ><a href="https://github.com/pubship/pubship/blob/main/LICENSE"
+            >AGPL-3.0-only ↗</a
+          >
+        </nav>
+      </div>
+      <div class="footer-notices">
+        <p>
+          PubShip is an independent open-source project and is not affiliated
+          with, endorsed by, or sponsored by Google. Google, Google Play and
+          Android are trademarks of Google LLC.
+        </p>
+        <p class="footer-trademark">
+          <span>PubShip™ is a trademark of</span>
+          <span
+            ><a
+              href="https://vorobyov.me"
+              aria-label="Denys Vorobyov, personal website"
+              >Denys Vorobyov</a
+            >.</span
+          >
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,67 +1,98 @@
-const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+// Content starts fully readable. Add independent, keyboard-operable tab groups.
+for (const group of document.querySelectorAll("[data-tabs]")) {
+  const tablist = group.querySelector("[data-tablist]");
+  const tabs = Array.from(tablist.querySelectorAll("[data-panel]"));
+  const panels = tabs.map((tab) => document.getElementById(tab.dataset.panel));
+  if (!tabs.length || panels.some((panel) => !panel)) continue;
 
-function activateTab(tab, focus = false) {
-  for (const candidate of tabs) {
-    const selected = candidate === tab;
-    candidate.setAttribute("aria-selected", String(selected));
-    candidate.tabIndex = selected ? 0 : -1;
-    document.getElementById(candidate.getAttribute("aria-controls")).hidden =
-      !selected;
-  }
-  if (focus) tab.focus();
-}
+  const activate = (index, focus = false) => {
+    tabs.forEach((tab, candidate) => {
+      const selected = candidate === index;
+      tab.setAttribute("aria-selected", String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+      panels[candidate].hidden = !selected;
+    });
+    if (focus) tabs[index].focus();
+  };
 
-for (const [index, tab] of tabs.entries()) {
-  tab.addEventListener("click", () => activateTab(tab));
-  tab.addEventListener("keydown", (event) => {
-    let next;
-    if (event.key === "ArrowRight") next = (index + 1) % tabs.length;
-    if (event.key === "ArrowLeft")
-      next = (index + tabs.length - 1) % tabs.length;
-    if (event.key === "Home") next = 0;
-    if (event.key === "End") next = tabs.length - 1;
-    if (next !== undefined) {
-      event.preventDefault();
-      activateTab(tabs[next], true);
-    }
+  tablist.setAttribute("role", "tablist");
+  tabs.forEach((tab, index) => {
+    tab.setAttribute("role", "tab");
+    tab.setAttribute("aria-controls", panels[index].id);
+    panels[index].setAttribute("role", "tabpanel");
+    panels[index].setAttribute("aria-labelledby", tab.id);
+    panels[index].tabIndex = 0;
+    tab.addEventListener("click", () => activate(index));
+    tab.addEventListener("keydown", (event) => {
+      let next;
+      if (event.key === "ArrowRight" || event.key === "ArrowDown")
+        next = (index + 1) % tabs.length;
+      if (event.key === "ArrowLeft" || event.key === "ArrowUp")
+        next = (index + tabs.length - 1) % tabs.length;
+      if (event.key === "Home") next = 0;
+      if (event.key === "End") next = tabs.length - 1;
+      if (next !== undefined) {
+        event.preventDefault();
+        activate(next, true);
+      }
+    });
   });
+  group.classList.add("tabs-ready");
+  tablist.hidden = false;
+  activate(0);
 }
 
 for (const button of document.querySelectorAll("[data-copy]")) {
+  const code = document.getElementById(button.dataset.copy);
+  const status = button
+    .closest(".code-block")
+    ?.querySelector('[role="status"]');
+  if (!code || !status) continue;
   button.hidden = false;
+  let reset;
   button.addEventListener("click", async () => {
-    const code = document.getElementById(button.dataset.copy);
-    const status = button.closest(".install").querySelector('[role="status"]');
+    clearTimeout(reset);
+    status.textContent = "";
     try {
       await navigator.clipboard.writeText(code.textContent);
-      status.textContent = "Commands copied. Paste them in your terminal.";
+      button.textContent = "Copied";
+      status.textContent = "Copied to clipboard.";
     } catch {
       const selection = window.getSelection();
-      const range = document.createRange();
-      range.selectNodeContents(code);
-      selection.removeAllRanges();
-      selection.addRange(range);
+      if (selection) {
+        const range = document.createRange();
+        range.selectNodeContents(code);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+      button.textContent = "Copy";
       status.textContent =
-        "Automatic copy is unavailable. The commands are selected for manual copying.";
+        "Automatic copy is unavailable. The text is selected; press Ctrl+C or Command+C to copy it.";
     }
+    reset = setTimeout(() => {
+      button.textContent = "Copy";
+    }, 2400);
   });
 }
 
-// Enhance headings once as they enter view; navigation and content work without JS.
-// A reduced-motion preference cancels this enhancement, including live changes.
+// Animate one request and response, once. A live reduced-motion change stops it.
 const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
-if ("IntersectionObserver" in window && !motionPreference.matches) {
-  const arrivals = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      if (!entry.isIntersecting) continue;
-      if (!motionPreference.matches) entry.target.classList.add("is-arriving");
-      arrivals.unobserve(entry.target);
-    }
-  });
-  for (const heading of document.querySelectorAll(".section-heading")) {
-    arrivals.observe(heading);
-  }
+const diagram = document.querySelector("[data-diagram]");
+if (diagram && "IntersectionObserver" in window && !motionPreference.matches) {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        if (!motionPreference.matches) diagram.classList.add("is-flowing");
+        observer.disconnect();
+      }
+    },
+    { threshold: 0.4 },
+  );
+  observer.observe(diagram);
   motionPreference.addEventListener("change", (event) => {
-    if (event.matches) arrivals.disconnect();
+    if (event.matches) {
+      observer.disconnect();
+      diagram.classList.remove("is-flowing");
+    }
   });
 }

@@ -8,8 +8,14 @@ Check all pages at mobile and desktop widths, keyboard behavior, accessibility, 
 
 ## 0.24.1 client-distribution review
 
-The package release adds client manifests, a logo and an agent installation guide; it does not change the 170 enabled methods, local-first model or permission boundaries. The website's `uvx pubship` installation remains correct for the published package. Keep the displayed 0.24.0 reference until 0.24.1 is published; manifest availability is not marketplace acceptance. The stale publication-pending sentence in llms.txt is corrected here. Every footer states exactly "PubShip™ is a trademark of Denys Vorobyov." The legal name links to the owner's personal website; initials must not replace it.
+The package release adds client manifests, a logo and an agent installation guide; it does not change the 170 enabled methods, local-first model or permission boundaries. The website's `uvx pubship` installation remains correct for the published package. PyPI and the GitHub release now publish 0.24.1; the website displays that version. Manifest availability is not marketplace acceptance. The stale publication-pending sentence in llms.txt is corrected here. Every footer states exactly "PubShip™ is a trademark of Denys Vorobyov." The legal name links to the owner's personal website; initials must not replace it.
 
 Navigation targets align section content below the viewport edge using the shared spacing scale, including direct links from policy pages. Section headings receive a short, once-only entrance; content stays visible without JavaScript and reduced motion disables animation and smooth scrolling.
 
-The final section reserves most of a viewport in height so its anchor is not clamped by the document bottom on desktop. The header is not sticky; its height is not an anchor offset. Before correction at an 800 px viewport height, Get started stopped at 91.78 px (1024 px wide) and 91.17 px (1440 px wide), equally with motion on or off.
+The final section uses natural content spacing. Its anchor can be clamped by the document bottom; the test checks maximum scroll and full heading visibility in that case. Other anchors keep the exact landing-position check. Do not add viewport-based minimum heights to force anchor alignment.
+
+## October 2026 design implementation
+
+The reviewed Ultramarine design adds local setup and permissions pages. Website metadata, social assets, discovery files and shared chrome are updated together. The prototype remains reference material; production is static HTML, local fonts and progressive JavaScript under the existing CSP. See [copy sources and QA evidence](design-review-2026-10.md).
+
+The current GitHub approval is for inclusion in its MCP directory. Until a public listing is verified, use "Approved for inclusion" and do not imply certification, sponsorship or partnership. The official MCP Registry and GitHub's directory are distinct publication surfaces.

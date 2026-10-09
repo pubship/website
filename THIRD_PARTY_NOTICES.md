@@ -6,11 +6,15 @@ root LICENSE is authoritative. This notice does not relicense third-party work.
 
 ## Browser-delivered assets
 
-The site serves its own HTML, CSS, JavaScript and SVG/PNG files. It bundles no npm
-runtime dependencies, font files, analytics SDKs or Google logo assets. CSS uses
-fonts installed on the visitor's device. The social PNG is rendered from the
-repository's SVG. The visual reference was Aeterna's layout and light-adapted
-spacing/color direction; its content, logo and image assets are not redistributed.
+Original PubShip website code is licensed under AGPL-3.0-only. The following unmodified third-party assets have their own licenses, which are preserved with the distribution:
+
+- **Bricolage Grotesque**, by its upstream project authors: SIL Open Font License 1.1. See [copyright and full license](site/assets/fonts/bricolage-grotesque-OFL.txt).
+- **IBM Plex Sans**, by its upstream project authors: SIL Open Font License 1.1. See [copyright and full license](site/assets/fonts/ibm-plex-sans-OFL.txt).
+- **IBM Plex Mono**, by its upstream project authors: SIL Open Font License 1.1. See [copyright and full license](site/assets/fonts/ibm-plex-mono-OFL.txt).
+
+The social SVG references the same local fonts through a same-origin stylesheet; the PNG is rendered with those fonts. Font attribution, original download sources and file hashes are maintained in [the font directory](site/assets/fonts/README.md). No visitor font request is made to Google Fonts.
+
+The site bundles no npm runtime dependencies, analytics SDKs or Google logo assets. The visual reference was Aeterna; its content, logo and image assets are not redistributed.
 
 ## Development dependencies
 

@@ -10,15 +10,51 @@ const paths = mark
   .replace(/<\/svg>\s*$/, "");
 const markAt = (x, y, size) =>
   `<svg x="${x}" y="${y}" width="${size}" height="${size}" viewBox="0 0 32 32">${paths}</svg>`;
-const social = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-<rect width="1200" height="630" fill="#f7f8f5"/>
-${markAt(72, 66, 64)}
-<g fill="#202826" font-family="Arial, sans-serif">
-<text x="144" y="112" font-size="42" font-weight="700">PubShip</text>
-<text x="80" y="280" font-size="68" font-weight="700">Your next release.</text>
-<text x="80" y="365" font-size="68" font-weight="700">A clearer workflow.</text>
-<text x="80" y="450" font-size="28">Open-source MCP tooling for Google Play developer workflows.</text>
-<text x="80" y="550" font-size="24">Local-first. Your credentials. AGPL-3.0-only.</text>
+const headingFont = (
+  await readFile(new URL("fonts/bricolage-grotesque.woff2", assets))
+).toString("base64");
+const bodyFont = (
+  await readFile(new URL("fonts/ibm-plex-sans.woff2", assets))
+).toString("base64");
+// The browser-served SVG uses a same-origin stylesheet under the strict CSP.
+// Only the offline renderer embeds font bytes in its temporary document.
+const renderFonts = `
+@font-face{font-family:PubShipHeading;src:url(data:font/woff2;base64,${headingFont}) format('woff2');font-weight:500 700}
+@font-face{font-family:PubShipBody;src:url(data:font/woff2;base64,${bodyFont}) format('woff2');font-weight:400 600}`;
+await writeFile(
+  new URL("social-fonts.css", assets),
+  `@font-face {
+  font-family: PubShipHeading;
+  src: url("fonts/bricolage-grotesque.woff2") format("woff2");
+  font-weight: 500 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: PubShipBody;
+  src: url("fonts/ibm-plex-sans.woff2") format("woff2");
+  font-weight: 400 600;
+  font-display: swap;
+}
+`,
+);
+const social = `<?xml-stylesheet type="text/css" href="/assets/social-fonts.css"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<rect width="1200" height="630" fill="#f7f4ec"/>
+<rect x="1182" width="18" height="630" fill="#3b3ff2"/>
+${markAt(72, 58, 48)}
+<g fill="#16140f" font-family="PubShipHeading, Arial, sans-serif" font-weight="600">
+<text x="132" y="97" font-size="38">PubShip</text>
+<text x="80" y="234" font-size="76">Bring your release</text>
+<text x="80" y="316" font-size="76">workflow into your</text>
+<text x="80" y="398" font-size="76">AI workspace.</text>
+</g>
+<rect x="80" y="463" width="280" height="66" rx="14" fill="#16140f"/>
+<g font-family="PubShipBody, Arial, sans-serif">
+<text x="104" y="506" font-size="30" fill="#f7f4ec">$ uvx pubship</text>
+<text x="392" y="488" font-size="25" fill="#3a362f">Open-source MCP server for</text>
+<text x="392" y="522" font-size="25" fill="#3a362f">Google Play developer workflows</text>
+<text x="80" y="581" font-size="22" fill="#57524a">Local-first. Your credentials. AGPL-3.0-only.</text>
+<text x="1088" y="92" text-anchor="end" font-size="23" fill="#3a362f">pubship.dev</text>
 </g></svg>`;
 await writeFile(new URL("social.svg", assets), social + "\n");
 const browser = await chromium.launch();
@@ -29,13 +65,13 @@ try {
       "apple-touch-icon.png",
       180,
       180,
-      `<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><rect width="180" height="180" fill="#f7f8f5"/>${markAt(26, 26, 128)}</svg>`,
+      `<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><rect width="180" height="180" fill="#f7f4ec"/>${markAt(26, 26, 128)}</svg>`,
     ],
     [
       "favicon-32.png",
       32,
       32,
-      `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" fill="#f7f8f5"/>${markAt(0, 0, 32)}</svg>`,
+      `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" fill="#f7f4ec"/>${markAt(0, 0, 32)}</svg>`,
     ],
   ]) {
     const page = await browser.newPage({
@@ -43,8 +79,9 @@ try {
       deviceScaleFactor: 1,
     });
     await page.setContent(
-      `<html><head><style>body{margin:0}svg{display:block}</style></head><body>${svg}</body></html>`,
+      `<html><head><style>${renderFonts}body{margin:0}svg{display:block}</style></head><body>${svg}</body></html>`,
     );
+    await page.evaluate(() => document.fonts.ready);
     await page.screenshot({ path: fileURLToPath(new URL(name, assets)) });
     await page.close();
     console.log(`${name}: ${width}x${height}, derived from mark.svg`);

@@ -1,127 +1,298 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
+const paths = [
+  "/",
+  "/get-started/",
+  "/permissions/",
+  "/privacy/",
+  "/terms/",
+  "/404.html",
+];
+const workflowIds = ["release", "quality", "change"];
+const clientIds = ["claude", "codex", "cursor", "gemini", "generic"];
+const tags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
+const audit = async (page) => {
+  expect(
+    (await new AxeBuilder({ page }).withTags(tags).analyze()).violations,
+  ).toEqual([]);
+};
+
+test.beforeEach(async ({ page, baseURL }) => {
+  await page.route("**/*", async (route) => {
+    if (new URL(route.request().url()).origin === new URL(baseURL).origin)
+      await route.continue();
+    else await route.abort();
+  });
+});
+
 for (const width of [320, 390, 768, 1440, 2560]) {
   test(`homepage works at ${width}px without overflow or accessibility violations`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 1080 });
     const errors = [];
-    page.on("pageerror", (error) => errors.push(error.message));
     const requests = [];
+    page.on("pageerror", (error) => errors.push(error.message));
     page.on("request", (request) => requests.push(request.url()));
     await page.goto("/");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     expect(
       await page.evaluate(
-        () => document.documentElement.scrollWidth <= window.innerWidth,
+        () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
-    const audit = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-      .analyze();
-    expect(audit.violations).toEqual([]);
+    await audit(page);
     expect(errors).toEqual([]);
     expect(
       requests.every(
         (url) => new URL(url).origin === new URL(page.url()).origin,
       ),
     ).toBe(true);
-    await expect(
-      page.locator(".hero-note").filter({
-        hasText:
-          "Run locally with your own credentials. No project-run Google service.",
-      }),
-    ).toBeVisible();
+    await expect(page.locator("main")).toContainText(
+      /No (?:project-run Google|PubShip-run) service/i,
+    );
   });
 }
 
-test("demo tabs support keyboard navigation and identify synthetic data", async ({
+for (const path of paths.slice(1)) {
+  test(`${path} has accessible content and only local asset requests`, async ({
+    page,
+  }) => {
+    const errors = [];
+    const requests = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    page.on("request", (request) => requests.push(request.url()));
+    for (const width of [320, 1440]) {
+      await page.setViewportSize({ width, height: 1080 });
+      await page.goto(path);
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      await audit(page);
+    }
+    expect(errors).toEqual([]);
+    expect(
+      requests.every(
+        (url) => new URL(url).origin === new URL(page.url()).origin,
+      ),
+    ).toBe(true);
+  });
+}
+
+for (const [path, prefix, ids] of [
+  ["/", "wf", workflowIds],
+  ["/", "client", clientIds],
+  ["/get-started/", "client", clientIds],
+]) {
+  test(`${path} ${prefix} tabs have roving focus, linked panels and keyboard wraparound`, async ({
+    page,
+  }) => {
+    await page.goto(path);
+    const tab = (id) => page.locator(`#${prefix}-tab-${id}`);
+    const panel = (id) => page.locator(`#${prefix}-panel-${id}`);
+    const selected = async (id) => {
+      for (const other of ids) {
+        await expect(tab(other)).toHaveAttribute("role", "tab");
+        await expect(tab(other)).toHaveAttribute(
+          "aria-controls",
+          `${prefix}-panel-${other}`,
+        );
+        await expect(tab(other)).toHaveAttribute(
+          "aria-selected",
+          String(other === id),
+        );
+        await expect(tab(other)).toHaveAttribute(
+          "tabindex",
+          other === id ? "0" : "-1",
+        );
+        await expect(panel(other)).toHaveAttribute(
+          "aria-labelledby",
+          `${prefix}-tab-${other}`,
+        );
+        if (other === id) await expect(panel(other)).toBeVisible();
+        else await expect(panel(other)).toBeHidden();
+      }
+    };
+    await selected(ids[0]);
+    await tab(ids[0]).focus();
+    for (let index = 1; index <= ids.length; index++) {
+      await page.keyboard.press("ArrowRight");
+      const id = ids[index % ids.length];
+      await selected(id);
+      await expect(tab(id)).toBeFocused();
+    }
+    for (const [key, id] of [
+      ["ArrowLeft", ids.at(-1)],
+      ["Home", ids[0]],
+      ["End", ids.at(-1)],
+    ]) {
+      await page.keyboard.press(key);
+      await selected(id);
+      await expect(tab(id)).toBeFocused();
+    }
+    for (const id of ids) {
+      await tab(id).click();
+      await selected(id);
+      await audit(page);
+    }
+  });
+}
+
+test("workflow examples preserve synthetic provenance and distinguish lifecycle, missing data and staging", async ({
   page,
 }) => {
   await page.goto("/");
-  await page.getByRole("tab", { name: "Release", exact: true }).focus();
-  await page.keyboard.press("ArrowRight");
   await expect(
-    page.getByRole("tab", { name: "Reviews", exact: true }),
-  ).toHaveAttribute("aria-selected", "true");
-  await expect(page.locator("#demo-reviews")).toBeVisible();
-  await expect(page.locator("#demo-release")).toBeHidden();
-  await page.keyboard.press("End");
-  await expect(page.locator("#demo-reports")).toBeVisible();
-  await expect(
-    page.getByText("A missing row does not mean zero installs."),
-  ).toBeVisible();
-  await expect(
-    page.getByText(
-      "Illustrative responses · Synthetic data · Not a live connection",
-    ),
-  ).toBeVisible();
-  await page.keyboard.press("Home");
-  await expect(page.locator("#demo-release")).toBeVisible();
-});
-
-test("copy success is announced and copies exactly the visible commands", async ({
-  page,
-}) => {
-  await page.addInitScript(() =>
-    Object.defineProperty(navigator, "clipboard", {
-      value: {
-        writeText: async (text) => {
-          window.copied = text;
-        },
-      },
-    }),
-  );
-  await page.goto("/");
-  await page.getByRole("button", { name: "Copy commands" }).click();
-  await expect(page.getByRole("status")).toContainText("Commands copied");
-  expect(await page.evaluate(() => window.copied)).toBe(
-    await page.locator("#install-command").textContent(),
-  );
-});
-
-test("denied clipboard access gives a usable manual fallback", async ({
-  page,
-}) => {
-  await page.addInitScript(() =>
-    Object.defineProperty(navigator, "clipboard", {
-      value: {
-        writeText: async () => {
-          throw new Error("permission denied");
-        },
-      },
-    }),
-  );
-  await page.goto("/");
-  await page.getByRole("button", { name: "Copy commands" }).click();
-  await expect(page.getByRole("status")).toContainText(
-    "selected for manual copying",
-  );
-  expect(await page.evaluate(() => window.getSelection().toString())).toBe(
-    await page.locator("#install-command").textContent(),
-  );
-});
-
-test("skip link moves keyboard focus into main", async ({ page }) => {
-  await page.goto("/");
-  await page.keyboard.press("Tab");
-  await expect(
-    page.getByRole("link", { name: "Skip to content" }),
-  ).toBeFocused();
+    page.locator("section").filter({ has: page.locator("#workflows") }),
+  ).toContainText(/synthetic/i);
+  const release = page.locator("#wf-panel-release");
+  await expect(release).toContainText("list_releases");
+  await expect(release).toContainText(/not published yet/i);
+  const disclosure = release.locator("details");
+  await expect(disclosure).not.toHaveAttribute("open", "");
+  await disclosure.locator("summary").focus();
   await page.keyboard.press("Enter");
-  await expect(page.locator("#main")).toBeFocused();
+  await expect(disclosure).toHaveAttribute("open", "");
+  await expect(disclosure).toContainText("releaseLifecycleState");
+  await expect(disclosure).toContainText("RELEASE_LIFECYCLE_STATE_IN_REVIEW");
+  await page.locator("#wf-tab-quality").click();
+  await expect(page.locator("#wf-panel-quality")).toContainText(
+    /not the same as zero/i,
+  );
+  await expect(
+    page.getByRole("img", { name: /daily crash rate/i }),
+  ).toHaveAccessibleName(/October 6: no row returned yet/i);
+  await expect(page.locator("#wf-panel-quality")).toContainText(
+    "America/Los_Angeles",
+  );
+  await page.locator("#wf-tab-change").click();
+  const change = page.locator("#wf-panel-change");
+  for (const text of [
+    "prepare_store_listing_update",
+    "apply_store_listing_update",
+    "committed: false",
+    "publication_verified: false",
+    "single-use",
+    "10 minutes",
+    "GOOGLE_PLAY_WRITE_PACKAGES",
+  ])
+    await expect(change).toContainText(text);
+  await expect(change).toContainText(
+    /Nothing has been committed or published/i,
+  );
+  await expect(change).toContainText("Before:");
+  await expect(change).toContainText("After:");
 });
 
-test("privacy page, internal links and assets resolve", async ({
+for (const failure of [false, true]) {
+  test(`every copy control ${failure ? "selects exact text after clipboard denial" : "copies exact visible code and announces success"}`, async ({
+    page,
+  }) => {
+    await page.addInitScript(
+      (denied) =>
+        Object.defineProperty(navigator, "clipboard", {
+          configurable: true,
+          value: {
+            writeText: async (text) => {
+              if (denied) throw new Error("permission denied");
+              window.copied = text;
+            },
+          },
+        }),
+      failure,
+    );
+    for (const path of ["/", "/get-started/"]) {
+      await page.goto(path);
+      const seen = new Set();
+      for (const client of clientIds) {
+        await page.locator(`#client-tab-${client}`).click();
+        for (const button of await page.locator("[data-copy]:visible").all()) {
+          const id = await button.getAttribute("data-copy");
+          if (seen.has(id)) continue;
+          seen.add(id);
+          const code = page.locator(`[id="${id}"]`);
+          const text = await code.textContent();
+          expect(text.trim().length).toBeGreaterThan(0);
+          await button.click();
+          const block = button.locator(
+            "xpath=ancestor::*[contains(concat(' ',normalize-space(@class),' '),' code-block ')][1]",
+          );
+          const status = block.getByRole("status");
+          if (failure) {
+            await expect(status).toContainText(/select|manual/i);
+            expect(await page.evaluate(() => getSelection().toString())).toBe(
+              text,
+            );
+          } else {
+            await expect(status).toContainText(/copied/i);
+            await expect(button).toContainText("Copied");
+            expect(await page.evaluate(() => window.copied)).toBe(text);
+          }
+        }
+      }
+      expect(seen.size).toBeGreaterThanOrEqual(4);
+    }
+  });
+}
+
+test("unavailable clipboard API still selects code for manual copying", async ({
+  page,
+}) => {
+  await page.addInitScript(() =>
+    Object.defineProperty(navigator, "clipboard", { value: undefined }),
+  );
+  await page.goto("/");
+  const button = page.locator("[data-copy]:visible").first();
+  const id = await button.getAttribute("data-copy");
+  await button.click();
+  expect(await page.evaluate(() => getSelection().toString())).toBe(
+    await page.locator(`[id="${id}"]`).textContent(),
+  );
+  await expect(
+    page.getByRole("status").filter({ hasText: /select|manual/i }),
+  ).toBeVisible();
+});
+
+test("skip links move keyboard focus into main on every page", async ({
+  page,
+}) => {
+  for (const path of paths) {
+    await page.goto(path);
+    await page.keyboard.press("Tab");
+    await expect(
+      page.getByRole("link", { name: "Skip to content" }),
+    ).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(page.locator("#main")).toBeFocused();
+  }
+});
+
+test("internal links, assets, redirects and unavailable routes resolve correctly", async ({
   page,
   request,
 }) => {
-  await page.goto("/");
-  const links = await page
-    .locator('a[href^="#"]')
-    .evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href")));
-  for (const href of links) await expect(page.locator(href)).toHaveCount(1);
+  const destinations = new Set();
+  for (const path of paths) {
+    await page.goto(path);
+    for (const href of await page
+      .locator("a[href]")
+      .evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href")))) {
+      const url = new URL(href, page.url());
+      if (url.origin === new URL(page.url()).origin)
+        destinations.add(url.pathname + url.hash);
+    }
+  }
+  for (const target of destinations) {
+    expect((await request.get(target.split("#")[0])).status(), target).toBe(
+      200,
+    );
+    await page.goto(target);
+    const hash = new URL(page.url()).hash;
+    if (hash)
+      await expect(
+        page.locator(`[id="${decodeURIComponent(hash.slice(1))}"]`),
+        target,
+      ).toHaveCount(1);
+  }
   for (const asset of [
     "/assets/mark.svg",
     "/assets/site.css",
@@ -131,39 +302,24 @@ test("privacy page, internal links and assets resolve", async ({
     "/sitemap.xml",
     "/.well-known/security.txt",
   ])
-    expect((await request.get(asset)).status()).toBe(200);
-  const redirect = await request.get("/privacy", {
-    maxRedirects: 0,
-    headers: { Host: "pubship.dev" },
-  });
-  expect([301, 308]).toContain(redirect.status());
-  expect(redirect.headers().location).toBe("/privacy/");
-  await page.getByRole("link", { name: "Privacy", exact: true }).click();
-  await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "A clear boundary",
-  );
-  for (const [label, heading] of [
-    ["Privacy", "A clear boundary"],
-    ["Terms", "Open source."],
-  ]) {
-    await page.getByRole("link", { name: label, exact: true }).click();
-    await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      heading,
-    );
-    await expect(page.locator(".note").first()).toContainText(
-      "The project does not operate a Google-connected service",
-    );
-    await expect(page.locator(".note").first()).toContainText("website");
-    const audit = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-      .analyze();
-    expect(audit.violations).toEqual([]);
+    expect((await request.get(asset)).status(), asset).toBe(200);
+  for (const path of ["/get-started", "/permissions", "/privacy", "/terms"]) {
+    const redirect = await request.get(path, {
+      maxRedirects: 0,
+      headers: { Host: "pubship.dev" },
+    });
+    expect([301, 308]).toContain(redirect.status());
+    expect(redirect.headers().location).toBe(`${path}/`);
   }
-  expect((await request.get("/this-page-does-not-exist")).status()).toBe(404);
-  expect((await request.get("/.git/config")).status()).toBe(404);
+  for (const path of [
+    "/this-page-does-not-exist",
+    "/.git/config",
+    "/design-assets/Home.dc.html",
+  ])
+    expect((await request.get(path)).status(), path).toBe(404);
 });
 
-test("text stays readable during entrance and tab transitions", async ({
+test("text remains accessible during entrance and panel transitions", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
@@ -174,61 +330,95 @@ test("text stays readable during entrance and tab transitions", async ({
       animation.currentTime = 130;
     }
   });
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  const entrance = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-    .analyze();
-  expect(entrance.violations).toEqual([]);
-  await page.getByRole("tab", { name: "Reviews", exact: true }).click();
-  await page.locator("#demo-reviews").evaluate((element) => {
+  await audit(page);
+  await page.locator("#wf-tab-quality").click();
+  await page.locator("#wf-panel-quality").evaluate((element) => {
     for (const animation of element.getAnimations()) {
       animation.pause();
       animation.currentTime = 60;
     }
   });
-  const panel = await new AxeBuilder({ page })
-    .include(".demo")
-    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-    .analyze();
-  expect(panel.violations).toEqual([]);
+  await audit(page);
 });
 
-test("reduced motion disables scrolling and entrance animations", async ({
+test("reduced motion disables scrolling and all entrance, panel and connection animations", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
-  expect(
-    await page.evaluate(
-      () => getComputedStyle(document.documentElement).scrollBehavior,
-    ),
-  ).toBe("auto");
-  expect(
-    await page
-      .locator(".hero h1")
-      .evaluate((element) => getComputedStyle(element).animationName),
-  ).toBe("none");
-  await page.getByRole("tab", { name: "Reviews", exact: true }).click();
-  expect(
-    await page
-      .locator("#demo-reviews")
-      .evaluate((element) => getComputedStyle(element).animationName),
-  ).toBe("none");
-  expect(await page.evaluate(() => document.getAnimations().length)).toBe(0);
+  for (const path of ["/", "/get-started/", "/permissions/"]) {
+    await page.goto(path);
+    expect(
+      await page.evaluate(
+        () => getComputedStyle(document.documentElement).scrollBehavior,
+      ),
+    ).toBe("auto");
+    for (const tab of await page.getByRole("tab").all()) await tab.click();
+    await page.locator("footer").scrollIntoViewIfNeeded();
+    expect(await page.evaluate(() => document.getAnimations().length)).toBe(0);
+  }
 });
 
-test("core content and setup stay usable without JavaScript", async ({
+test("every workflow and setup panel stays readable without JavaScript", async ({
   browser,
+  baseURL,
 }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    reducedMotion: "reduce",
+  });
   const page = await context.newPage();
-  await page.goto(process.env.SITE_TEST_URL || "http://127.0.0.1:4173");
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await expect(page.locator("#install-command")).toContainText("uvx pubship");
-  await expect(
-    page.getByRole("button", { name: "Copy commands" }),
-  ).toBeHidden();
-  await context.close();
+  try {
+    for (const path of ["/", "/get-started/"]) {
+      await page.goto(new URL(path, baseURL).href);
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      for (const panel of await page.locator("[data-tab-panel]").all()) {
+        await expect(panel).toBeVisible();
+        await expect(panel.getByRole("heading").first()).toBeVisible();
+      }
+      await expect(page.locator("[data-tab-panel]")).toHaveCount(
+        path === "/" ? 8 : 5,
+      );
+      for (const button of await page.locator("[data-copy]").all())
+        await expect(button).toBeHidden();
+      for (const list of await page.locator("[data-tablist]").all())
+        await expect(list).toBeHidden();
+      await expect(page.locator("#client-panel-generic")).toContainText(
+        '"mcpServers"',
+      );
+      await expect(page.locator("#client-panel-codex")).toContainText(
+        "codex mcp list",
+      );
+    }
+  } finally {
+    await context.close();
+  }
+});
+
+test("setup and permission boundaries stay explicit", async ({ page }) => {
+  await page.goto("/get-started/");
+  for (let step = 1; step <= 4; step++)
+    await expect(page.locator(`#step-${step}`)).toBeVisible();
+  await expect(page.locator("main")).toContainText(/Never paste the key/i);
+  await expect(page.locator("main")).toContainText(
+    /no credentials and makes no Google call/i,
+  );
+  await expect(page.locator("#step-4")).toContainText("uvx pubship --check");
+  for (const name of ["GOOGLE_APPLICATION_CREDENTIALS", "GOOGLE_PLAY_PACKAGES"])
+    await expect(page.locator("#client-panel-claude")).toContainText(name);
+  await page.goto("/permissions/");
+  for (const name of [
+    "GOOGLE_PLAY_PACKAGES",
+    "GOOGLE_PLAY_SENSITIVE_READ_PACKAGES",
+    "GOOGLE_PLAY_WRITE_PACKAGES",
+    "GOOGLE_PLAY_TRACK_PACKAGES",
+    "GOOGLE_PLAY_EDIT_PACKAGES",
+  ])
+    await expect(page.locator("main")).toContainText(name);
+  await expect(page.locator("main")).toContainText(
+    "Voided-purchase data is disabled",
+  );
+  await expect(page.locator("main")).toContainText(/synthetic providers/i);
+  await expect(page.locator("main")).toContainText(/10 minutes/i);
 });
 
 test("discovery files expose canonical pages and truthful documentation links", async ({
@@ -238,21 +428,27 @@ test("discovery files expose canonical pages and truthful documentation links", 
   const sitemap = await request.get("/sitemap.xml");
   expect(sitemap.status()).toBe(200);
   expect(sitemap.headers()["content-type"]).toContain("xml");
-  const xml = await sitemap.text();
   await page.goto("/");
-  const locations = await page.evaluate((source) => {
-    const document = new DOMParser().parseFromString(source, "application/xml");
-    if (document.querySelector("parsererror"))
-      throw new Error("Invalid sitemap XML");
-    return [...document.querySelectorAll("loc")].map(
-      (node) => node.textContent,
-    );
-  }, xml);
-  expect(locations).toEqual([
-    "https://pubship.dev/",
-    "https://pubship.dev/privacy/",
-    "https://pubship.dev/terms/",
-  ]);
+  const locations = await page.evaluate(
+    (source) => {
+      const document = new DOMParser().parseFromString(
+        source,
+        "application/xml",
+      );
+      if (document.querySelector("parsererror"))
+        throw new Error("Invalid sitemap XML");
+      return [...document.querySelectorAll("loc")].map(
+        (node) => node.textContent,
+      );
+    },
+    await sitemap.text(),
+  );
+  expect(locations.sort()).toEqual(
+    paths
+      .filter((path) => path !== "/404.html")
+      .map((path) => `https://pubship.dev${path}`)
+      .sort(),
+  );
   for (const canonical of locations) {
     await page.goto(new URL(canonical).pathname);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
@@ -264,8 +460,7 @@ test("discovery files expose canonical pages and truthful documentation links", 
       "/llms.txt",
     );
   }
-  const robots = await request.get("/robots.txt");
-  expect(await robots.text()).toContain(
+  expect(await (await request.get("/robots.txt")).text()).toContain(
     "Sitemap: https://pubship.dev/sitemap.xml",
   );
   const llms = await request.get("/llms.txt");
@@ -273,19 +468,21 @@ test("discovery files expose canonical pages and truthful documentation links", 
   expect(llms.headers()["content-type"]).toContain("text/plain");
   const text = await llms.text();
   expect(text).toMatch(/^# PubShip\n\n> /);
-  expect(text).toContain("No project-run Google service");
-  expect(text).toContain("main/docs/api-methods.md");
-  expect(text).toContain("170 enabled methods are implemented");
-  expect(text).toContain("Voided purchases are disabled by policy");
-  expect(text).toContain("No project-run Google service");
+  for (const claim of [
+    "No project-run Google service",
+    "main/docs/api-methods.md",
+    "170 enabled methods are implemented",
+    "Voided purchases are disabled by policy",
+  ])
+    expect(text).toContain(claim);
   expect(text).not.toMatch(/<html|client_secret|access_token/);
 });
 
-test("all pages retain legal notices and no hosted sign-in", async ({
+test("all pages retain legal notices and have no hosted sign-in", async ({
   page,
   request,
 }) => {
-  for (const path of ["/", "/privacy/", "/terms/", "/404.html"]) {
+  for (const path of paths) {
     await page.goto(path);
     await expect(page.locator("footer")).toContainText(
       "PubShip is an independent open-source project",
@@ -293,13 +490,26 @@ test("all pages retain legal notices and no hosted sign-in", async ({
     await expect(page.locator(".footer-trademark")).toHaveText(
       "PubShip™ is a trademark of Denys Vorobyov.",
     );
-    await expect(page.locator("footer")).not.toContainText("Built by Dennis");
     await expect(page.locator(".footer-trademark a")).toHaveAttribute(
       "href",
       "https://vorobyov.me",
     );
+    await expect(page.locator("footer")).not.toContainText("Built by Dennis");
     await expect(page.locator('a[href*="/google/callback"], form')).toHaveCount(
       0,
+    );
+    expect(await page.locator("body").textContent()).not.toContain("—");
+  }
+  for (const [path, heading] of [
+    ["/privacy/", "A clear boundary"],
+    ["/terms/", "Open source."],
+  ]) {
+    await page.goto(path);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(
+      heading,
+    );
+    await expect(page.locator("main")).toContainText(
+      "The project does not operate a Google-connected service",
     );
   }
   const security = await request.get("/.well-known/security.txt");
@@ -307,4 +517,40 @@ test("all pages retain legal notices and no hosted sign-in", async ({
   expect(await security.text()).toContain(
     "Contact: mailto:security@pubship.dev",
   );
+});
+
+test("social SVG opens directly with local fonts and no CSP or console errors", async ({
+  page,
+}) => {
+  const errors = [];
+  const requests = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+  page.on("request", (request) => requests.push(request.url()));
+  const response = await page.goto("/assets/social.svg");
+  expect(response.status()).toBe(200);
+  await expect(page.locator("svg").first()).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        [...document.fonts]
+          .filter((face) => face.status === "loaded")
+          .map((face) => face.family.replaceAll('"', ""))
+          .sort(),
+      ),
+    )
+    .toEqual(["PubShipBody", "PubShipHeading"]);
+  expect(
+    requests.every((url) => new URL(url).origin === new URL(page.url()).origin),
+  ).toBe(true);
+  expect(requests.map((url) => new URL(url).pathname)).toEqual(
+    expect.arrayContaining([
+      "/assets/social-fonts.css",
+      "/assets/fonts/bricolage-grotesque.woff2",
+      "/assets/fonts/ibm-plex-sans.woff2",
+    ]),
+  );
+  expect(errors).toEqual([]);
 });
