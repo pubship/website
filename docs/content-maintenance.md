@@ -21,3 +21,7 @@ The final section uses natural content spacing. Its anchor can be clamped by the
 The reviewed Ultramarine design adds local setup and permissions pages. Website metadata, social assets, discovery files and shared chrome are updated together. The prototype remains reference material; production is static HTML, local fonts and progressive JavaScript under the existing CSP. See [copy sources and QA evidence](design-review-2026-10.md).
 
 The current GitHub approval is for inclusion in its MCP directory. Until a public listing is verified, use "Approved for inclusion" and do not imply certification, sponsorship or partnership. The official MCP Registry and GitHub's directory are distinct publication surfaces.
+
+## Directory listings
+
+The homepage separates directory/community features from package and registry records. See [verified links, sources and search limits](directory-listings.md). A user-provided link must be checked before adding approval or score claims; listing logos alone identify the directory.
