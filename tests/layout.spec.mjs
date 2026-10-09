@@ -69,6 +69,14 @@ for (const width of widths) {
       expect(orphanHeadings, `${path} single-word heading endings`).toEqual([]);
       const header = await page.locator("header.frame").boundingBox();
       const footer = await page.locator("footer.frame").boundingBox();
+      const footerSurface = await page.locator(".footer-surface").boundingBox();
+      const availableWidth = await page.evaluate(
+        () => document.documentElement.clientWidth,
+      );
+      expect(footerSurface.x, `${path} footer background left edge`).toBe(0);
+      expect(footerSurface.width, `${path} footer background width`).toBe(
+        availableWidth,
+      );
       expect(Math.abs(header.x - footer.x), path).toBeLessThan(1);
       expect(Math.abs(header.width - footer.width), path).toBeLessThan(1);
       const content = await page

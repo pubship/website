@@ -27,7 +27,7 @@ const header = (name) => `<header class="header frame">
     <a class="header-github" href="https://github.com/pubship/pubship" aria-label="GitHub repository">GitHub <span aria-hidden="true">↗</span></a>
   </nav>
 </header>`;
-const footer = `<footer class="footer frame">
+const footer = `<div class="footer-surface"><footer class="footer frame">
   <div class="footer-top">
     <div class="footer-intro">${lockup()}<p>Google Play developer workflows in your MCP client. Runs on your computer with your own credentials.</p></div>
     <nav aria-label="Use"><h2>Use</h2><a href="/#workflows">Workflows</a><a href="/get-started/">Setup guide</a><a href="/permissions/">Permissions</a></nav>
@@ -38,7 +38,7 @@ const footer = `<footer class="footer frame">
     <p>PubShip is an independent open-source project and is not affiliated with, endorsed by, or sponsored by Google. Google, Google Play and Android are trademarks of Google LLC.</p>
     <p class="footer-trademark"><span>PubShip™ is a trademark of</span> <span><a href="https://vorobyov.me" aria-label="Denys Vorobyov, personal website">Denys Vorobyov</a>.</span></p>
   </div>
-</footer>`;
+</footer></div>`;
 
 for (const name of pages) {
   const path = fileURLToPath(new URL(`../site/${name}`, import.meta.url));
@@ -77,7 +77,10 @@ for (const name of pages) {
       '<a class="skip" href="#main" tabindex="0">',
     )
     .replace(/<header class="header frame">[\s\S]*?<\/header>/, header(name))
-    .replace(/<footer class="footer frame">[\s\S]*?<\/footer>/, footer)
+    .replace(
+      /(?:<div class="footer-surface">\s*)?<footer class="footer frame">[\s\S]*?<\/footer>(?:\s*<\/div>)?/,
+      footer,
+    )
     .replace(
       /<div class="connection-center">[\s\S]*?<\/div>/,
       `<div class="connection-center">${lockup(false)}<small>LOCAL · STDIO</small></div>`,

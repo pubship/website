@@ -2900,20 +2900,14 @@ main:focus {
   }
 }
 
-/* The footer shares the page gutter while its charcoal surface spans the screen. */
+/* A normal-flow wrapper fills the available width, including classic scrollbars. */
+.footer-surface {
+  background: var(--ink);
+}
 .footer {
-  position: relative;
-  isolation: isolate;
   border-top: 0;
   padding-block: clamp(48px, 6vw, 80px) 32px;
   color: #d9d2c4;
-}
-.footer::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 0 calc((100% - 100vw) / 2);
-  background: var(--ink);
 }
 .footer .brand-lockup {
   color: var(--paper);
