@@ -243,9 +243,10 @@ test("brand assets and social cards use local, complete metadata", async ({
   }
 });
 
-// Natural page height can clamp a late anchor. Its heading must remain visible.
+// Only the last navigation target on each page may be clamped by natural height.
 async function anchorLanding(page, target) {
-  return page.locator(`#${target}`).evaluate((anchor) => {
+  const allowEndClamp = target === "project" || target === "step-4";
+  return page.locator(`#${target}`).evaluate((anchor, allowEndClamp) => {
     const box = anchor.getBoundingClientRect();
     const heading = anchor.matches("h1,h2,h3")
       ? anchor
@@ -254,11 +255,12 @@ async function anchorLanding(page, target) {
     const maximum = document.documentElement.scrollHeight - innerHeight;
     return (
       Math.abs(box.top - 24) <= 2 ||
-      (Math.abs(scrollY - maximum) <= 2 &&
+      (allowEndClamp &&
+        Math.abs(scrollY - maximum) <= 2 &&
         headingBox.top >= 0 &&
         headingBox.bottom <= innerHeight)
     );
-  });
+  }, allowEndClamp);
 }
 
 for (const width of [375, 768, 1024, 1440]) {

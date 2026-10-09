@@ -334,6 +334,8 @@ main:focus {
 }
 .client-note {
   display: grid;
+  min-width: 0;
+  overflow-wrap: anywhere;
   gap: 12px;
   align-content: start;
 }
