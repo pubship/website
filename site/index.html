@@ -11,8 +11,10 @@
     />
     <link rel="canonical" href="https://pubship.dev/" />
     <!-- shared:metadata -->
+    <meta name="robots" content="max-image-preview:large" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="PubShip" />
+    <meta property="og:locale" content="en_US" />
     <meta
       property="og:title"
       content="PubShip · MCP server for Google Play Console"
@@ -94,6 +96,7 @@
         >
       </nav>
     </header>
+    <!-- shared:breadcrumbs --><!-- /shared:breadcrumbs -->
     <main id="main" tabindex="-1" class="main-content">
       <section aria-labelledby="hero-title" class="hero hero-spacing">
         <div class="content-frame">
@@ -1171,6 +1174,12 @@ codex mcp list</code></pre>
           <h2 id="questions-title" class="section-title">
             Before you connect.
           </h2>
+          <p class="guide-promo">
+            Start with a concrete workflow:
+            <a href="/guides/check-google-play-release/"
+              >check your Google Play release with MCP</a
+            >, including lifecycle states and data freshness.
+          </p>
           <div class="search-answers-list">
             <details>
               <summary>What is an MCP server for Google Play?</summary>
@@ -1226,8 +1235,22 @@ codex mcp list</code></pre>
       <section
         aria-labelledby="project-title"
         class="project-section section-spacing"
+        itemprop="about"
+        itemscope
+        itemtype="https://schema.org/SoftwareSourceCode"
+        itemid="https://pubship.dev/#source"
       >
         <div class="content-frame">
+          <meta itemprop="name" content="PubShip" /><meta
+            itemprop="programmingLanguage"
+            content="Python"
+          /><link
+            itemprop="codeRepository"
+            href="https://github.com/pubship/pubship"
+          /><link
+            itemprop="license"
+            href="https://spdx.org/licenses/AGPL-3.0-only.html"
+          />
           <div id="project" class="section-heading-layout">
             <div class="section-heading-copy">
               <p class="section-eyebrow">
@@ -1366,6 +1389,7 @@ codex mcp list</code></pre>
             <h2>Use</h2>
             <a href="/#workflows">Workflows</a
             ><a href="/get-started/">Setup guide</a
+            ><a href="/guides/check-google-play-release/">Release guide</a
             ><a href="/permissions/">Permissions</a>
           </nav>
           <nav aria-label="Project">

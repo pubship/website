@@ -87,3 +87,9 @@ Lighthouse 13.5.0 identified oversized directory icons. Three PNG marks now use 
 The initial mobile lab runs scored accessibility and best practices at 100 on all three main pages. Lighthouse's SEO score was 92 because its in-page robots.txt fetch was rejected by `connect-src 'none'`. Independent HTTP and browser checks fetched valid robots.txt successfully, and Search Console confirmed Googlebot access. Keep the CSP; do not weaken it to improve an audit score. Final lab results are linked in the PR. These are controlled local measurements, not field Core Web Vitals.
 
 Command logs, live baseline, owner-supplied Console findings, responsive screenshots and lab reports are kept outside Git in `pubship-evidence/search-audit-20261009`. PR checks record the final source tested. Search Console ranking, field performance and sitemap submission remain separately observable outcomes; a passing test suite does not prove them.
+
+## Follow-up: Google verification and expanded implementation
+
+The owner submitted the sitemap. Although the Sitemaps report initially showed Couldn't fetch, Google Inspection Tool smartphone successfully fetched it on 9 October at 17:10:02 with crawling allowed. Successful processing in the Sitemaps report remains unconfirmed. Public fetches returned valid XML with five URLs. The new guide will add the sixth URL after deployment.
+
+The previously proposed original walkthrough is now implemented at `/guides/check-google-play-release/`, reviewed against 0.24.1 source. It adds concrete read calls and distinguishes lifecycle, staged edits and vitals freshness. The expanded pass also adds visible breadcrumb markup, SoftwareSourceCode identity, canonical index-file redirects and generated sitemap synchronization. See [the Google checklist](google-search-checklist.md) for applicability and owner-only verification.

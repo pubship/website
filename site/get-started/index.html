@@ -11,8 +11,10 @@
     />
     <link rel="canonical" href="https://pubship.dev/get-started/" />
     <!-- shared:metadata -->
+    <meta name="robots" content="max-image-preview:large" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="PubShip" />
+    <meta property="og:locale" content="en_US" />
     <meta
       property="og:title"
       content="Set up an MCP server for Google Play · PubShip"
@@ -92,6 +94,33 @@
         >
       </nav>
     </header>
+    <!-- shared:breadcrumbs -->
+    <nav
+      class="breadcrumbs frame"
+      aria-label="Breadcrumb"
+      itemscope
+      itemtype="https://schema.org/BreadcrumbList"
+    >
+      <ol>
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+        >
+          <a itemprop="item" href="/"><span itemprop="name">Home</span></a
+          ><meta itemprop="position" content="1" />
+        </li>
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+        >
+          <span itemprop="name" aria-current="page">Setup guide</span
+          ><meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </nav>
+    <!-- /shared:breadcrumbs -->
     <main id="main" tabindex="-1" class="main-content">
       <section aria-labelledby="start-title" class="setup-hero">
         <div class="content-frame">
@@ -689,6 +718,15 @@ codex mcp list</code></pre>
           </div>
         </div>
       </section>
+      <div class="content-frame guide-next">
+        <p>
+          Ready for a useful first workflow?
+          <a href="/guides/check-google-play-release/"
+            >Inspect Production and Internal Testing releases</a
+          >
+          and learn how to interpret the result.
+        </p>
+      </div>
     </main>
     <div class="footer-surface">
       <footer class="footer frame">
@@ -708,6 +746,7 @@ codex mcp list</code></pre>
             <h2>Use</h2>
             <a href="/#workflows">Workflows</a
             ><a href="/get-started/">Setup guide</a
+            ><a href="/guides/check-google-play-release/">Release guide</a
             ><a href="/permissions/">Permissions</a>
           </nav>
           <nav aria-label="Project">

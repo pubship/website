@@ -4,6 +4,7 @@ import AxeBuilder from "@axe-core/playwright";
 const paths = [
   "/",
   "/get-started/",
+  "/guides/check-google-play-release/",
   "/permissions/",
   "/privacy/",
   "/terms/",

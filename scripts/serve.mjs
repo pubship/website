@@ -32,6 +32,15 @@ const server = createServer(async (request, response) => {
       return;
     }
     const decoded = decodeURIComponent(url.pathname);
+    const indexAlias = url.pathname.match(
+      /^\/(get-started\/|permissions\/|privacy\/|terms\/|guides\/check-google-play-release\/)?index\.html$/,
+    );
+    if (indexAlias) {
+      response
+        .writeHead(308, { Location: "/" + (indexAlias[1] || "") + url.search })
+        .end();
+      return;
+    }
     let path = resolve(root, "." + decoded);
     if (
       !(path + sep).startsWith(root) ||

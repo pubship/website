@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f4ec" />
+    <title>Check Google Play releases with MCP · PubShip guide</title>
+    <meta
+      name="description"
+      content="Inspect Production and Internal Testing with PubShip. Read release lifecycle states, verify vitals freshness and troubleshoot Google Play access without making changes."
+    />
+    <link
+      rel="canonical"
+      href="https://pubship.dev/guides/check-google-play-release/"
+    />
+    <!-- shared:metadata -->
+    <meta name="robots" content="max-image-preview:large" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PubShip" />
+    <meta property="og:locale" content="en_US" />
+    <meta
+      property="og:title"
+      content="Check Google Play releases with MCP · PubShip guide"
+    />
+    <meta
+      property="og:description"
+      content="Inspect Production and Internal Testing with PubShip. Read release lifecycle states, verify vitals freshness and troubleshoot Google Play access without making changes."
+    />
+    <meta
+      property="og:url"
+      content="https://pubship.dev/guides/check-google-play-release/"
+    />
+    <meta property="og:image" content="https://pubship.dev/assets/social.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="PubShip. Bring your release workflow into your AI workspace."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Check Google Play releases with MCP · PubShip guide"
+    />
+    <meta
+      name="twitter:description"
+      content="Inspect Production and Internal Testing with PubShip. Read release lifecycle states, verify vitals freshness and troubleshoot Google Play access without making changes."
+    />
+    <meta
+      name="twitter:image"
+      content="https://pubship.dev/assets/social.png"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="PubShip. Bring your release workflow into your AI workspace."
+    />
+    <link rel="icon" href="/assets/mark.svg" type="image/svg+xml" sizes="any" />
+    <link
+      rel="icon"
+      href="/assets/favicon-32.png"
+      type="image/png"
+      sizes="32x32"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="/assets/apple-touch-icon.png"
+      sizes="180x180"
+    />
+    <!-- /shared:metadata -->
+    <link rel="stylesheet" href="/assets/site.css" />
+    <script src="/assets/site.js" defer></script>
+    <link rel="describedby" href="/llms.txt" type="text/plain" />
+  </head>
+  <body>
+    <a class="skip" href="#main" tabindex="0">Skip to content</a>
+    <header class="header frame">
+      <a class="brand-lockup" href="/" aria-label="PubShip home"
+        ><img src="/assets/mark.svg" alt="" width="32" height="32" /><span
+          >PubShip</span
+        ></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="/#workflows">Workflows</a>
+        <a href="/get-started/">Setup</a>
+        <a
+          href="https://github.com/pubship/pubship/tree/main/docs"
+          aria-label="Docs, on GitHub"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Docs <span aria-hidden="true">↗</span></a
+        >
+        <a
+          class="header-github"
+          href="https://github.com/pubship/pubship"
+          aria-label="GitHub repository"
+          target="_blank"
+          rel="noopener noreferrer"
+          >GitHub <span aria-hidden="true">↗</span></a
+        >
+      </nav>
+    </header>
+    <!-- shared:breadcrumbs -->
+    <nav
+      class="breadcrumbs frame"
+      aria-label="Breadcrumb"
+      itemscope
+      itemtype="https://schema.org/BreadcrumbList"
+    >
+      <ol>
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+        >
+          <a itemprop="item" href="/"><span itemprop="name">Home</span></a
+          ><meta itemprop="position" content="1" />
+        </li>
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+        >
+          <span itemprop="name" aria-current="page">Release inspection</span
+          ><meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </nav>
+    <!-- /shared:breadcrumbs -->
+    <main id="main" tabindex="-1" class="main-content">
+      <section class="setup-hero" aria-labelledby="guide-title">
+        <div class="content-frame">
+          <p class="section-eyebrow">Release inspection guide</p>
+          <h1 id="guide-title" class="page-title">
+            Check a Google Play release with MCP.
+          </h1>
+          <p class="page-intro">
+            Use PubShip to compare Production and Internal Testing from your AI
+            client, without changing a release. Learn what the returned
+            lifecycle state proves, and what still needs checking in Play
+            Console.
+          </p>
+          <p class="guide-meta">
+            Reviewed <time datetime="2026-10-09">9 October 2026</time> against
+            PubShip 0.24.1. Examples use a synthetic package; no live Google
+            account was queried for this guide.
+          </p>
+        </div>
+      </section>
+      <div class="guide-body content-frame">
+        <article class="guide-content">
+          <nav aria-label="On this page" class="guide-toc">
+            <ol>
+              <li><a href="#prepare">Prepare read access</a></li>
+              <li><a href="#inspect">Inspect both tracks</a></li>
+              <li><a href="#interpret">Interpret the response</a></li>
+              <li><a href="#vitals">Check vitals freshness</a></li>
+              <li><a href="#troubleshoot">Resolve common failures</a></li>
+            </ol>
+          </nav>
+          <section id="prepare">
+            <h2>1. Prepare read access</h2>
+            <p>
+              Follow the <a href="/get-started/">local setup guide</a> to
+              install uv, enable the Google Play Android Developer API and grant
+              your service account read access to your app in Play Console.
+              Configure <code>GOOGLE_PLAY_PACKAGES</code> with your actual
+              package name. If using a service-account key, set
+              <code>GOOGLE_APPLICATION_CREDENTIALS</code> to its absolute file
+              path on your computer. Never paste the key contents into a chat.
+            </p>
+            <p>Start with the credential-free installation check:</p>
+            <pre tabindex="0"><code>uvx pubship --check</code></pre>
+            <p>
+              This confirms the installed program can run. It does not
+              authenticate with Google or prove that your account can read the
+              app. Connect PubShip using the setup instructions for Claude Code,
+              Codex, Cursor, Gemini CLI or your generic MCP client. Keep write
+              opt-ins disabled for this walkthrough.
+            </p>
+          </section>
+          <section id="inspect">
+            <h2>2. Inspect both tracks</h2>
+            <p>Ask your client:</p>
+            <blockquote>
+              Inspect Production and Internal Testing releases for
+              com.example.app. Make no changes. Show each track, version code,
+              the exact releaseLifecycleState and the retrieval time. Separate a
+              published release from one still in review. Explain anything the
+              response does not establish.
+            </blockquote>
+            <p>
+              Replace <code>com.example.app</code> with an app you own and have
+              allowlisted. The read tool is <code>list_releases</code>. These
+              are MCP tool arguments, not shell commands:
+            </p>
+            <h3>Production</h3>
+            <pre
+              tabindex="0"
+            ><code data-tool="list_releases">{"package":"com.example.app","track":"production"}</code></pre>
+            <h3>Internal Testing</h3>
+            <pre
+              tabindex="0"
+            ><code data-tool="list_releases">{"package":"com.example.app","track":"internal"}</code></pre>
+            <p>
+              The tool reads release lifecycle information without creating or
+              committing an edit. Your client's wording may vary; inspect its
+              actual tool call and response. An assistant saying it checked a
+              release is not evidence unless the read succeeded.
+            </p>
+          </section>
+          <section id="interpret">
+            <h2>3. Read the lifecycle</h2>
+            <p>
+              The response includes <code>package</code>, <code>track</code>,
+              <code>fetched_at</code>, Google's response under
+              <code>data</code>, and a note about lifecycle interpretation. Keep
+              the exact lifecycle value alongside any plain-language summary.
+            </p>
+            <dl class="guide-definitions">
+              <dt>In review is not published</dt>
+              <dd>
+                A release returned from the production track may still be in
+                review. The track name identifies its destination, not proof of
+                public availability.
+              </dd>
+              <dt>A staged edit is a draft snapshot</dt>
+              <dd>
+                Track data read from an edit is not live release evidence. Even
+                a staged status of <code>completed</code> does not prove the
+                release is available to users.
+              </dd>
+              <dt>Retrieval time is not publication time</dt>
+              <dd>
+                <code>fetched_at</code> records when PubShip retrieved the
+                response. Do not relabel it as Google's approval time or the
+                moment users received the update.
+              </dd>
+              <dt>Missing is not zero</dt>
+              <dd>
+                An empty response, omitted field or excluded obsolete release is
+                not proof that the app never had a release. State the scope and
+                limits of the returned data.
+              </dd>
+            </dl>
+            <p>
+              Before announcing a rollout, reconcile the returned lifecycle with
+              Play Console's publishing state and the intended countries, track
+              and audience. This guide establishes a read workflow, not
+              universal device availability or a release approval.
+            </p>
+          </section>
+          <section id="vitals">
+            <h2>4. Check data freshness</h2>
+            <p>
+              To investigate quality after a release, enable the separate Google
+              Play Developer Reporting API and its required access. Publisher
+              access alone does not establish Reporting access. First inspect
+              the exact method contract with the credential-free
+              <code>describe_api_method</code> tool:
+            </p>
+            <pre
+              tabindex="0"
+            ><code data-tool="describe_api_method">{"method":"playdeveloperreporting.vitals.crashrate.get"}</code></pre>
+            <p>
+              Then retrieve crash-rate metric-set metadata through
+              <code>read_reporting</code>:
+            </p>
+            <pre
+              tabindex="0"
+            ><code data-tool="read_reporting">{"method":"playdeveloperreporting.vitals.crashrate.get","parameters":{"name":"apps/com.example.app/crashRateMetricSet"}}</code></pre>
+            <p>
+              This GET returns metric-set metadata, including freshness
+              information when supplied. It does not return a daily crash-rate
+              time series. Use the separate query method and its documented
+              date, metric and dimension contract for that. Do not report
+              missing or not-yet-available days as zero crashes, and keep the
+              reporting timezone visible.
+            </p>
+          </section>
+          <section id="troubleshoot">
+            <h2>5. Resolve common failures</h2>
+            <dl class="guide-definitions">
+              <dt>ADC authentication failed</dt>
+              <dd>
+                Check the credential path and Google authentication setup in the
+                client process. A terminal and a desktop client may have
+                different environments. Follow the
+                <a
+                  href="https://github.com/pubship/pubship/blob/main/docs/setup.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >authentication guide</a
+                >; do not paste keys or tokens into the conversation.
+              </dd>
+              <dt>Google returns 403</dt>
+              <dd>
+                Verify the appropriate API is enabled and the actual
+                service-account email has access to this app in Play Console.
+                The local package allowlist does not grant Google permissions.
+              </dd>
+              <dt>The package is outside the allowlist</dt>
+              <dd>
+                Correct <code>GOOGLE_PLAY_PACKAGES</code> in your client's local
+                configuration, then restart the MCP connection. Add only
+                packages you or your organization own.
+              </dd>
+              <dt>The client cannot find the tool</dt>
+              <dd>
+                Check that the PubShip connection started successfully and lists
+                its tools. Recheck the
+                <a href="/get-started/">client configuration</a> and executable
+                path.
+              </dd>
+            </dl>
+            <p>
+              Once reads are working, use the
+              <a href="/permissions/">permissions and data-flow guide</a> before
+              enabling any changes. PubShip runs locally with your credentials;
+              tool results reach your MCP client and may reach its model
+              provider.
+            </p>
+          </section>
+          <section aria-labelledby="sources-title">
+            <h2 id="sources-title">Contracts and further reading</h2>
+            <ul>
+              <li>
+                <a
+                  href="https://github.com/pubship/pubship/blob/v0.24.1/src/pubship/server.py"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >PubShip 0.24.1 MCP tool definitions</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://github.com/pubship/pubship/blob/v0.24.1/src/pubship/play.py"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Release read response and lifecycle handling</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://github.com/pubship/pubship/blob/main/docs/api-methods.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Current API method catalog</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://developers.google.com/android-publisher/getting_started"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Google Play Developer API setup</a
+                >
+              </li>
+            </ul>
+          </section>
+        </article>
+      </div>
+    </main>
+    <div class="footer-surface">
+      <footer class="footer frame">
+        <div class="footer-top">
+          <div class="footer-intro">
+            <a class="brand-lockup" href="/" aria-label="PubShip home"
+              ><img src="/assets/mark.svg" alt="" width="32" height="32" /><span
+                >PubShip</span
+              ></a
+            >
+            <p>
+              Google Play developer workflows in your MCP client. Runs on your
+              computer with your own credentials.
+            </p>
+          </div>
+          <nav aria-label="Use">
+            <h2>Use</h2>
+            <a href="/#workflows">Workflows</a
+            ><a href="/get-started/">Setup guide</a
+            ><a href="/guides/check-google-play-release/">Release guide</a
+            ><a href="/permissions/">Permissions</a>
+          </nav>
+          <nav aria-label="Project">
+            <h2>Project</h2>
+            <a
+              href="https://github.com/pubship/pubship"
+              target="_blank"
+              rel="noopener noreferrer"
+              >GitHub ↗</a
+            ><a
+              href="https://github.com/pubship/pubship/releases"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Releases ↗</a
+            ><a
+              href="https://pypi.org/project/pubship/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >PyPI ↗</a
+            ><a
+              href="https://github.com/pubship/pubship/issues/new/choose"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Report an issue ↗</a
+            >
+          </nav>
+          <nav aria-label="Legal">
+            <h2>Legal</h2>
+            <a href="/privacy/">Privacy</a><a href="/terms/">Terms</a
+            ><a
+              href="https://github.com/pubship/pubship/blob/main/LICENSE"
+              target="_blank"
+              rel="noopener noreferrer"
+              >AGPL-3.0-only ↗</a
+            >
+          </nav>
+        </div>
+        <div class="footer-notices">
+          <p>
+            PubShip is an independent open-source project and is not affiliated
+            with, endorsed by, or sponsored by Google. Google, Google Play and
+            Android are trademarks of Google LLC.
+          </p>
+          <p class="footer-trademark">
+            <span>PubShip™ is a trademark of</span>
+            <span
+              ><a
+                href="https://vorobyov.me"
+                aria-label="Denys Vorobyov, personal website"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Denys Vorobyov</a
+              >.</span
+            >
+          </p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
