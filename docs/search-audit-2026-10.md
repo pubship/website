@@ -80,4 +80,10 @@ Do not scatter articles across unrelated topics or create a page for every spell
 
 ## Verification record
 
+The first production-image CI run passed 143 tests and exposed one WebKit interaction race. Its trace showed scrolling continuing after keyboard focus entered a disclosure; the subsequent pointer click missed the quality tab. Smooth scrolling is now scoped to deliberate same-page anchor navigation. Native focus scrolling remains immediate, reduced motion is honored, and modified/external links retain native behavior. Existing position tolerances and timeouts were not relaxed.
+
+Lighthouse 13.5.0 identified oversized directory icons. Three PNG marks now use 84 px source dimensions for their 28 CSS px display at up to 3x density, reducing their combined size from 290,091 to 21,372 bytes (92.6%). Original source hashes and transformation details are retained in the asset provenance file.
+
+The initial mobile lab runs scored accessibility and best practices at 100 on all three main pages. Lighthouse's SEO score was 92 because its in-page robots.txt fetch was rejected by `connect-src 'none'`. Independent HTTP and browser checks fetched valid robots.txt successfully, and Search Console confirmed Googlebot access. Keep the CSP; do not weaken it to improve an audit score. Final lab results are linked in the PR. These are controlled local measurements, not field Core Web Vitals.
+
 Command logs, live baseline, owner-supplied Console findings, responsive screenshots and lab reports are kept outside Git in `pubship-evidence/search-audit-20261009`. PR checks record the final source tested. Search Console ranking, field performance and sitemap submission remain separately observable outcomes; a passing test suite does not prove them.

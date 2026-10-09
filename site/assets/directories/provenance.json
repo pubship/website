@@ -9,7 +9,9 @@
     "file": "mcp-so.png",
     "source": "https://mcp.so/logo.png",
     "retrieved": "2026-10-09",
-    "sha256": "6004a15b99afb4f36da2c48a3084797c92f7332bcb7733d38d7d14ae82176ab4"
+    "sha256": "f4961b11a22013b0bf3dfd711d71fe0331a572aa1ebfe65cfa489a55e371442c",
+    "source_sha256": "6004a15b99afb4f36da2c48a3084797c92f7332bcb7733d38d7d14ae82176ab4",
+    "transformation": "Resized proportionally to 84 px for 28 CSS px display at up to 3x density; mark and colors preserved."
   },
   {
     "file": "sourceweft.svg",
@@ -21,12 +23,16 @@
     "file": "github.png",
     "source": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
     "retrieved": "2026-10-09",
-    "sha256": "6d6ef7bede0416b6ebee2014be5852576dbce89235fe16ea5c44ed01bd522132"
+    "sha256": "a7ea45318a467ff751bfb56296b5c9b3b369928a39a624b6266856666c8a2199",
+    "source_sha256": "6d6ef7bede0416b6ebee2014be5852576dbce89235fe16ea5c44ed01bd522132",
+    "transformation": "Resized proportionally to 84 px for 28 CSS px display at up to 3x density; mark and colors preserved."
   },
   {
     "file": "mcplookup.png",
     "source": "https://mcplookup.com/icon.png",
     "retrieved": "2026-10-09",
-    "sha256": "1993a2261d49826a8024416b802e8159b6135be94aa589b2043b3cb32207f7a8"
+    "sha256": "3fb8b96b149f30bd2b2bbe4649e8b807ee6323678dbc5eafcde8ae23bdaf31a7",
+    "source_sha256": "1993a2261d49826a8024416b802e8159b6135be94aa589b2043b3cb32207f7a8",
+    "transformation": "Resized proportionally to 84 px for 28 CSS px display at up to 3x density; mark and colors preserved."
   }
 ]

@@ -37,7 +37,9 @@
   --line: #e2dccf;
 }
 html {
-  scroll-behavior: smooth;
+  /* Focus must not leave controls moving beneath the pointer. Anchor links
+     request smooth scrolling explicitly in site.js. */
+  scroll-behavior: auto;
   -webkit-text-size-adjust: 100%;
 }
 body {

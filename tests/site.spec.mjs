@@ -150,11 +150,22 @@ test("workflow examples preserve synthetic provenance and distinguish lifecycle,
   const disclosure = release.locator("details");
   await expect(disclosure).not.toHaveAttribute("open", "");
   await disclosure.locator("summary").focus();
+  // Native keyboard focus must not start a smooth viewport movement that can
+  // make the next pointer action miss its control (observed in WebKit).
+  expect(
+    await page.evaluate(
+      () => getComputedStyle(document.documentElement).scrollBehavior,
+    ),
+  ).toBe("auto");
   await page.keyboard.press("Enter");
   await expect(disclosure).toHaveAttribute("open", "");
   await expect(disclosure).toContainText("releaseLifecycleState");
   await expect(disclosure).toContainText("RELEASE_LIFECYCLE_STATE_IN_REVIEW");
   await page.locator("#wf-tab-quality").click();
+  await expect(page.locator("#wf-tab-quality")).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
   await expect(page.locator("#wf-panel-quality")).toContainText(
     /not the same as zero/i,
   );
