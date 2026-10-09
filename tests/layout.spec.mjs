@@ -481,7 +481,7 @@ test("late font completion cancels scripted anchor repair after wheel input", as
   }
 });
 
-test("header and footer symbol matches the wordmark capital height and baseline", async ({
+test("header and footer keep the larger symbol vertically centered with the wordmark", async ({
   page,
 }) => {
   for (const width of [375, 1440]) {
@@ -494,28 +494,12 @@ test("header and footer symbol matches the wordmark capital height and baseline"
           const image = link.querySelector("img").getBoundingClientRect();
           const word = link.querySelector("span");
           const box = word.getBoundingClientRect();
-          const style = getComputedStyle(word);
-          const canvas = document.createElement("canvas").getContext("2d");
-          canvas.font = style.font;
-          const capital = canvas.measureText("P");
-          // Linux canvas bounds are pixel-rounded at normal font sizes. Measure
-          // the design cap height at 20x to avoid platform-specific hinting.
-          canvas.font = `${style.fontWeight} ${parseFloat(style.fontSize) * 20}px ${style.fontFamily}`;
-          const capitalHeight =
-            canvas.measureText("P").actualBoundingBoxAscent / 20;
-          const baseline =
-            box.top +
-            (parseFloat(style.lineHeight) -
-              capital.fontBoundingBoxAscent -
-              capital.fontBoundingBoxDescent) /
-              2 +
-            capital.fontBoundingBoxAscent;
-          // Final supplied geometry: P height 340, total height 352.
-          const symbolHeight = (image.height * 340) / 352;
           return {
-            symbolHeight,
-            capitalHeight,
-            baselineError: Math.abs(image.top + symbolHeight - baseline),
+            symbolHeight: image.height,
+            centerError: Math.abs(
+              image.top + image.height / 2 - box.top - box.height / 2,
+            ),
+            gap: box.left - image.right,
             leftError: Math.abs(image.left - link.getBoundingClientRect().left),
             targetHeight: link.getBoundingClientRect().height,
           };
@@ -523,8 +507,9 @@ test("header and footer symbol matches the wordmark capital height and baseline"
       );
       expect(metrics).toHaveLength(2);
       for (const metric of metrics) {
-        expect(metric.symbolHeight).toBeCloseTo(metric.capitalHeight, 0);
-        expect(metric.baselineError).toBeLessThan(1);
+        expect(metric.symbolHeight).toBeCloseTo(20.625, 1);
+        expect(metric.centerError).toBeLessThan(1);
+        expect(metric.gap).toBeCloseTo(8, 1);
         expect(metric.leftError).toBeLessThan(1);
         expect(metric.targetHeight).toBeGreaterThanOrEqual(44);
       }

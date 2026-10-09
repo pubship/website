@@ -131,10 +131,8 @@ main:focus {
   padding-block: 14px;
 }
 .brand-lockup {
-  display: inline-grid;
-  grid-auto-flow: column;
-  align-items: baseline;
-  align-content: center;
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
   min-height: 44px;
   color: var(--ink);
@@ -145,10 +143,9 @@ main:focus {
   letter-spacing: -0.04em;
 }
 .brand-lockup img {
-  /* The P spans 340 units; its underline extends another 12 below baseline. */
-  width: calc(1cap * 277 / 340);
-  height: calc(1cap * 352 / 340);
-  transform: translateY(calc(1cap * 12 / 340));
+  /* Preserve the visible size of the original 30 px, 512-unit artwork. */
+  width: calc(30px * 277 / 512);
+  height: calc(30px * 352 / 512);
 }
 .header nav {
   display: flex;
