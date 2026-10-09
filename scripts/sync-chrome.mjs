@@ -23,20 +23,20 @@ const header = (name) => `<header class="header frame">
   <nav aria-label="Main navigation">
     <a href="/#workflows">Workflows</a>
     <a href="/get-started/"${name === "get-started/index.html" ? ' aria-current="page"' : ""}>Setup</a>
-    <a href="https://github.com/pubship/pubship/tree/main/docs" aria-label="Docs, on GitHub">Docs <span aria-hidden="true">↗</span></a>
-    <a class="header-github" href="https://github.com/pubship/pubship" aria-label="GitHub repository">GitHub <span aria-hidden="true">↗</span></a>
+    <a href="https://github.com/pubship/pubship/tree/main/docs" aria-label="Docs, on GitHub" target="_blank" rel="noopener noreferrer">Docs <span aria-hidden="true">↗</span></a>
+    <a class="header-github" href="https://github.com/pubship/pubship" aria-label="GitHub repository" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
   </nav>
 </header>`;
 const footer = `<div class="footer-surface"><footer class="footer frame">
   <div class="footer-top">
     <div class="footer-intro">${lockup()}<p>Google Play developer workflows in your MCP client. Runs on your computer with your own credentials.</p></div>
     <nav aria-label="Use"><h2>Use</h2><a href="/#workflows">Workflows</a><a href="/get-started/">Setup guide</a><a href="/permissions/">Permissions</a></nav>
-    <nav aria-label="Project"><h2>Project</h2><a href="https://github.com/pubship/pubship">GitHub ↗</a><a href="https://github.com/pubship/pubship/releases">Releases ↗</a><a href="https://pypi.org/project/pubship/">PyPI ↗</a><a href="https://github.com/pubship/pubship/issues/new/choose">Report an issue ↗</a></nav>
-    <nav aria-label="Legal"><h2>Legal</h2><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/pubship/pubship/blob/main/LICENSE">AGPL-3.0-only ↗</a></nav>
+    <nav aria-label="Project"><h2>Project</h2><a href="https://github.com/pubship/pubship" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://github.com/pubship/pubship/releases" target="_blank" rel="noopener noreferrer">Releases ↗</a><a href="https://pypi.org/project/pubship/" target="_blank" rel="noopener noreferrer">PyPI ↗</a><a href="https://github.com/pubship/pubship/issues/new/choose" target="_blank" rel="noopener noreferrer">Report an issue ↗</a></nav>
+    <nav aria-label="Legal"><h2>Legal</h2><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/pubship/pubship/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">AGPL-3.0-only ↗</a></nav>
   </div>
   <div class="footer-notices">
     <p>PubShip is an independent open-source project and is not affiliated with, endorsed by, or sponsored by Google. Google, Google Play and Android are trademarks of Google LLC.</p>
-    <p class="footer-trademark"><span>PubShip™ is a trademark of</span> <span><a href="https://vorobyov.me" aria-label="Denys Vorobyov, personal website">Denys Vorobyov</a>.</span></p>
+    <p class="footer-trademark"><span>PubShip™ is a trademark of</span> <span><a href="https://vorobyov.me" aria-label="Denys Vorobyov, personal website" target="_blank" rel="noopener noreferrer">Denys Vorobyov</a>.</span></p>
   </div>
 </footer></div>`;
 
