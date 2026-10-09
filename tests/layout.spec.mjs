@@ -498,6 +498,11 @@ test("header and footer symbol matches the wordmark capital height and baseline"
           const canvas = document.createElement("canvas").getContext("2d");
           canvas.font = style.font;
           const capital = canvas.measureText("P");
+          // Linux canvas bounds are pixel-rounded at normal font sizes. Measure
+          // the design cap height at 20x to avoid platform-specific hinting.
+          canvas.font = `${style.fontWeight} ${parseFloat(style.fontSize) * 20}px ${style.fontFamily}`;
+          const capitalHeight =
+            canvas.measureText("P").actualBoundingBoxAscent / 20;
           const baseline =
             box.top +
             (parseFloat(style.lineHeight) -
@@ -509,7 +514,7 @@ test("header and footer symbol matches the wordmark capital height and baseline"
           const symbolHeight = (image.height * 340) / 352;
           return {
             symbolHeight,
-            capitalHeight: capital.actualBoundingBoxAscent,
+            capitalHeight,
             baselineError: Math.abs(image.top + symbolHeight - baseline),
             leftError: Math.abs(image.left - link.getBoundingClientRect().left),
             targetHeight: link.getBoundingClientRect().height,
