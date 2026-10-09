@@ -3080,3 +3080,31 @@ main:focus {
     font-size: 14px;
   }
 }
+
+.search-answers-list {
+  margin-top: 28px;
+  max-width: 850px;
+}
+.search-answers-list details {
+  border-bottom: 1px solid var(--line);
+  padding-block: 8px;
+}
+.search-answers-list summary {
+  min-height: 44px;
+  padding-block: 12px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.search-answers-list p {
+  color: var(--muted);
+  line-height: 1.65;
+  margin: 4px 0 16px;
+}
+.search-answers-list a {
+  display: inline-block;
+  min-height: 44px;
+  line-height: 44px;
+}
+.search-answers .section-title {
+  font-size: clamp(1.7rem, 3vw, 2.6rem);
+}

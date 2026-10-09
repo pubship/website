@@ -4,12 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#f7f4ec" />
-    <title>
-      PubShip · Open-source MCP server for Google Play developer workflows
-    </title>
+    <title>PubShip · MCP server for Google Play Console</title>
     <meta
       name="description"
-      content="Inspect releases, reviews, Android vitals and reports from your MCP client. Runs locally with your own Google credentials."
+      content="Use PubShip to inspect Google Play releases, reviews and Android vitals from Claude Code, Codex or Cursor. Open-source MCP server; local credentials, reads by default."
     />
     <link rel="canonical" href="https://pubship.dev/" />
     <!-- shared:metadata -->
@@ -17,11 +15,11 @@
     <meta property="og:site_name" content="PubShip" />
     <meta
       property="og:title"
-      content="PubShip · Open-source MCP server for Google Play developer workflows"
+      content="PubShip · MCP server for Google Play Console"
     />
     <meta
       property="og:description"
-      content="Inspect releases, reviews, Android vitals and reports from your MCP client. Runs locally with your own Google credentials."
+      content="Use PubShip to inspect Google Play releases, reviews and Android vitals from Claude Code, Codex or Cursor. Open-source MCP server; local credentials, reads by default."
     />
     <meta property="og:url" content="https://pubship.dev/" />
     <meta property="og:image" content="https://pubship.dev/assets/social.png" />
@@ -35,11 +33,11 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
-      content="PubShip · Open-source MCP server for Google Play developer workflows"
+      content="PubShip · MCP server for Google Play Console"
     />
     <meta
       name="twitter:description"
-      content="Inspect releases, reviews, Android vitals and reports from your MCP client. Runs locally with your own Google credentials."
+      content="Use PubShip to inspect Google Play releases, reviews and Android vitals from Claude Code, Codex or Cursor. Open-source MCP server; local credentials, reads by default."
     />
     <meta
       name="twitter:image"
@@ -66,7 +64,9 @@
     <script src="/assets/site.js" defer></script>
     <link rel="describedby" href="/llms.txt" type="text/plain" />
   </head>
-  <body>
+  <body itemscope itemtype="https://schema.org/WebSite">
+    <meta itemprop="name" content="PubShip" />
+    <link itemprop="url" href="https://pubship.dev/" />
     <a class="skip" href="#main" tabindex="0">Skip to content</a>
     <header class="header frame">
       <a class="brand-lockup" href="/" aria-label="PubShip home"
@@ -102,15 +102,16 @@
             MCP server for Google Play developer workflows
           </p>
           <h1 id="hero-title" class="hero-title">
-            Bring your release workflow into your
+            Bring Google Play releases into your
             <span class="no-wrap">AI workspace.</span>
           </h1>
           <div class="hero-summary-layout">
             <div class="hero-summary">
               <p class="hero-copy">
-                Inspect releases, reviews, Android vitals and reports from your
-                MCP client. Prepare authorized changes using your own Google
-                credentials and Play Console permissions.
+                PubShip is an open-source Model Context Protocol (MCP) server
+                for Google Play Console workflows. Inspect releases, reviews and
+                Android vitals from your AI client. Run locally with your own
+                credentials, and explicitly authorize any changes.
               </p>
               <a
                 href="https://github.com/mcp?search=pubship"
@@ -1158,6 +1159,66 @@ codex mcp list</code></pre>
               rel="noopener noreferrer"
               >Let your agent install it<span aria-hidden="true">↗</span></a
             >
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="search-answers section-spacing"
+        aria-labelledby="questions-title"
+      >
+        <div class="content-frame">
+          <h2 id="questions-title" class="section-title">
+            Before you connect.
+          </h2>
+          <div class="search-answers-list">
+            <details>
+              <summary>What is an MCP server for Google Play?</summary>
+              <p>
+                An MCP server gives a compatible AI client tools for developer
+                tasks. PubShip connects your client to Google's Play Developer
+                APIs so you can inspect release tracks, read reviews,
+                investigate Android vitals and prepare permitted changes for
+                apps you own. It is an independent project, not an official
+                Google product.
+              </p>
+            </details>
+            <details>
+              <summary>
+                Can I use PubShip with Claude Code, Codex, Cursor or Gemini CLI?
+              </summary>
+              <p>
+                Yes. PubShip runs locally over stdio, with setup instructions
+                for those clients and a generic MCP configuration. You need uv,
+                Google Play Console access and your own credentials. Follow the
+                <a href="/get-started/">client setup guide</a>; a documented
+                configuration does not mean every client version has been
+                tested.
+              </p>
+            </details>
+            <details>
+              <summary>Can PubShip change releases or store listings?</summary>
+              <p>
+                Reads are the default. Changes require explicit configuration
+                for the app and method, the necessary Play Console permissions,
+                and the operation's review and execution steps. Staging an edit
+                is not publication, and submitting a release does not guarantee
+                Google's approval. Start with the
+                <a href="/permissions/">permissions and change controls</a>.
+              </p>
+            </details>
+            <details>
+              <summary>Where do my credentials and app data go?</summary>
+              <p>
+                Your credentials stay on infrastructure you control; the PubShip
+                project does not receive them. The local server calls Google and
+                returns results to your MCP client. If that client uses a cloud
+                AI model, the results may be processed by its provider. Review
+                the
+                <a href="/permissions/#path-title">data-flow explanation</a> and
+                your client's settings before connecting.
+              </p>
+            </details>
           </div>
         </div>
       </section>

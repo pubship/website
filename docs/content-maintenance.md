@@ -25,3 +25,7 @@ The current GitHub approval is for inclusion in its MCP directory. Until a publi
 ## Directory listings
 
 The homepage separates directory/community features from package and registry records. See [verified links, sources and search limits](directory-listings.md). A user-provided link must be checked before adding approval or score claims; listing logos alone identify the directory.
+
+## Search readiness
+
+Keep titles, visible headings and descriptions specific to the actual page task. Homepage `WebSite` microdata names only PubShip and its canonical URL; preserve strict CSP. Use [the search audit](search-audit-2026-10.md) for Console evidence, sitemap submission, query measurement and content priorities. No ranking, certification or AI-citation guarantees.
