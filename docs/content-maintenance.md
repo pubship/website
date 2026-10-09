@@ -6,6 +6,8 @@ Use only evidence-backed counts from the generated method catalog. Keep local us
 
 Check all pages at mobile and desktop widths, keyboard behavior, accessibility, reduced motion and links. Keep footer non-affiliation and trademark statements on every page. Maintain sitemap.xml, robots.txt, llms.txt and security.txt. Regenerate social.png after changing social.svg. Keep private: true in package.json.
 
+External HTTP(S) links open in a new tab with `target="_blank"` and `rel="noopener noreferrer"`. Apply this to page content and shared navigation/footer templates. Same-site navigation and email links retain their normal behavior.
+
 ## 0.24.1 client-distribution review
 
 The package release adds client manifests, a logo and an agent installation guide; it does not change the 170 enabled methods, local-first model or permission boundaries. The website's `uvx pubship` installation remains correct for the published package. PyPI and the GitHub release now publish 0.24.1; the website displays that version. Manifest availability is not marketplace acceptance. The stale publication-pending sentence in llms.txt is corrected here. Every footer states exactly "PubShip™ is a trademark of Denys Vorobyov." The legal name links to the owner's personal website; initials must not replace it.
