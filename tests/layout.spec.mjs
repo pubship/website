@@ -228,12 +228,13 @@ test("brand assets and social cards use local, complete metadata", async ({
     );
     await expect(
       page.locator('link[rel="icon"][type="image/svg+xml"]'),
-    ).toHaveAttribute("href", "/assets/mark.svg");
+    ).toHaveAttribute("href", "/assets/logo.svg");
   }
   for (const [file, width, height] of [
     ["social.png", 1200, 630],
     ["apple-touch-icon.png", 180, 180],
     ["favicon-32.png", 32, 32],
+    ["favicon-16.png", 16, 16],
   ]) {
     const response = await request.get(`/assets/${file}`);
     expect(response.status()).toBe(200);

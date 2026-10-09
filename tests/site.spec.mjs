@@ -544,6 +544,11 @@ test("social SVG opens directly with local fonts and no CSP or console errors", 
   const response = await page.goto("/assets/social.svg");
   expect(response.status()).toBe(200);
   await expect(page.locator("svg").first()).toBeVisible();
+  // Preserve the outline mark when embedding its paths in the social SVG.
+  for (const path of await page.locator("svg svg path").all()) {
+    await expect(path).toHaveCSS("fill", "none");
+  }
+  await expect(page.locator("svg svg path")).toHaveCount(2);
   await expect
     .poll(() =>
       page.evaluate(() =>
