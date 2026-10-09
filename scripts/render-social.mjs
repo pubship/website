@@ -2,14 +2,17 @@ import { chromium } from "@playwright/test";
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
-// All bitmap brand assets derive from the same original, local SVG mark.
+// Social and Apple assets derive from the supplied final SVG variants.
+// Keep the owner-supplied 16 px and 32 px favicon PNGs unchanged.
 const assets = new URL("../site/assets/", import.meta.url);
 const mark = await readFile(new URL("mark.svg", assets), "utf8");
+const markViewBox = mark.match(/viewBox="([^"]+)"/)[1];
+const whiteMark = await readFile(new URL("logo.svg", assets), "utf8");
 const paths = mark
   .replace(/^[\s\S]*?<svg[^>]*>/, "")
   .replace(/<\/svg>\s*$/, "");
 const markAt = (x, y, size) =>
-  `<svg x="${x}" y="${y}" width="${size}" height="${size}" viewBox="0 0 32 32">${paths}</svg>`;
+  `<svg x="${x}" y="${y}" width="${size}" height="${size}" viewBox="${markViewBox}" fill="none">${paths}</svg>`;
 const headingFont = (
   await readFile(new URL("fonts/bricolage-grotesque.woff2", assets))
 ).toString("base64");
@@ -61,30 +64,21 @@ const browser = await chromium.launch();
 try {
   for (const [name, width, height, svg] of [
     ["social.png", 1200, 630, social],
-    [
-      "apple-touch-icon.png",
-      180,
-      180,
-      `<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><rect width="180" height="180" fill="#f7f4ec"/>${markAt(26, 26, 128)}</svg>`,
-    ],
-    [
-      "favicon-32.png",
-      32,
-      32,
-      `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" fill="#f7f4ec"/>${markAt(0, 0, 32)}</svg>`,
-    ],
+    ["apple-touch-icon.png", 180, 180, whiteMark],
   ]) {
     const page = await browser.newPage({
       viewport: { width, height },
       deviceScaleFactor: 1,
     });
     await page.setContent(
-      `<html><head><style>${renderFonts}body{margin:0}svg{display:block}</style></head><body>${svg}</body></html>`,
+      `<html><head><style>${renderFonts}body{margin:0}svg{display:block}body>svg{width:100vw;height:100vh}</style></head><body>${svg}</body></html>`,
     );
     await page.evaluate(() => document.fonts.ready);
     await page.screenshot({ path: fileURLToPath(new URL(name, assets)) });
     await page.close();
-    console.log(`${name}: ${width}x${height}, derived from mark.svg`);
+    console.log(
+      `${name}: ${width}x${height}, derived from ${name === "apple-touch-icon.png" ? "logo.svg" : "mark.svg"}`,
+    );
   }
 } finally {
   await browser.close();

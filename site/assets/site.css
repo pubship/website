@@ -1574,12 +1574,9 @@ main:focus {
 }
 .diagram-mark {
   flex: none;
-  margin-left: -6px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  width: 30px;
+  height: 30px;
+  filter: brightness(0) invert(1);
 }
 .diagram-copy-inherit {
   margin: 8px 0 0;

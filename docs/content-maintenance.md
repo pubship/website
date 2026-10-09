@@ -31,3 +31,7 @@ The homepage separates directory/community features from package and registry re
 Keep titles, visible headings and descriptions specific to the actual page task. Homepage `WebSite` microdata names only PubShip and its canonical URL; preserve strict CSP. Use [the search audit](search-audit-2026-10.md) for Console evidence, sitemap submission, query measurement and content priorities. No ranking, certification or AI-citation guarantees.
 
 Use [Google Search implementation and verification](google-search-checklist.md) to distinguish site checks from owner-only Console evidence. The release-inspection guide is reviewed against 0.24.1 tool contracts and uses synthetic examples. Update its review date only after actually rechecking its content. Shared chrome now generates breadcrumbs and the canonical sitemap; explicit index.html aliases permanently redirect without losing query strings.
+
+## Final logo assets
+
+Use the owner-supplied variants and mapping in [the final branding record](branding-2026-10.md). Keep supplied 16 px and 32 px PNG favicons unchanged; the renderer generates only the social card and Apple touch icon. Use the transparent mark in lockups and the white-background mark where a self-contained image is required.

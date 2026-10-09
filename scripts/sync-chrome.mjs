@@ -79,8 +79,9 @@ for (const name of pages) {
     <meta name="twitter:description" content="${description}" />
     <meta name="twitter:image" content="https://pubship.dev/assets/social.png" />
     <meta name="twitter:image:alt" content="PubShip. Bring your release workflow into your AI workspace." />
-    <link rel="icon" href="/assets/mark.svg" type="image/svg+xml" sizes="any" />
+    <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" sizes="any" />
     <link rel="icon" href="/assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="/assets/favicon-16.png" type="image/png" sizes="16x16" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" sizes="180x180" />
     <!-- /shared:metadata -->`;
   let output = input
