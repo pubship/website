@@ -42,6 +42,62 @@ for (const group of document.querySelectorAll("[data-tabs]")) {
   activate(0);
 }
 
+// Only deliberate same-page navigation animates. Native focus scrolling stays
+// immediate, so focusing a disclosure cannot race a subsequent pointer click.
+document.addEventListener("click", (event) => {
+  if (
+    event.defaultPrevented ||
+    event.button !== 0 ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.shiftKey ||
+    event.altKey ||
+    !(event.target instanceof Element)
+  )
+    return;
+  const anchor = event.target.closest("a[href]");
+  if (
+    !anchor ||
+    anchor.hasAttribute("download") ||
+    (anchor.target && anchor.target !== "_self")
+  )
+    return;
+  const url = new URL(anchor.href);
+  if (
+    url.origin !== location.origin ||
+    url.pathname !== location.pathname ||
+    url.search !== location.search ||
+    !url.hash
+  )
+    return;
+  let id;
+  try {
+    id = decodeURIComponent(url.hash.slice(1));
+  } catch {
+    return;
+  }
+  const destination = document.getElementById(id);
+  if (!destination) return;
+  event.preventDefault();
+  if (location.hash !== url.hash) history.pushState(null, "", url);
+  if (
+    !destination.matches("a[href], button, input, select, textarea, [tabindex]")
+  ) {
+    destination.tabIndex = -1;
+    destination.addEventListener(
+      "blur",
+      () => destination.removeAttribute("tabindex"),
+      { once: true },
+    );
+  }
+  destination.focus({ preventScroll: true });
+  destination.scrollIntoView({
+    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "instant"
+      : "smooth",
+  });
+});
+
 for (const button of document.querySelectorAll("[data-copy]")) {
   const code = document.getElementById(button.dataset.copy);
   const status = button

@@ -6,11 +6,23 @@ import { format } from "prettier";
 const pages = [
   "index.html",
   "get-started/index.html",
+  "guides/check-google-play-release/index.html",
   "permissions/index.html",
   "privacy/index.html",
   "terms/index.html",
   "404.html",
 ];
+const pageLabels = {
+  "get-started/index.html": "Setup guide",
+  "guides/check-google-play-release/index.html": "Release inspection",
+  "permissions/index.html": "Permissions",
+  "privacy/index.html": "Privacy",
+  "terms/index.html": "Terms",
+};
+const breadcrumbs = (name) =>
+  pageLabels[name]
+    ? `<!-- shared:breadcrumbs --><nav class="breadcrumbs frame" aria-label="Breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList"><ol><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="/"><span itemprop="name">Home</span></a><meta itemprop="position" content="1" /></li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><span itemprop="name" aria-current="page">${pageLabels[name]}</span><meta itemprop="position" content="2" /></li></ol></nav><!-- /shared:breadcrumbs -->`
+    : "<!-- shared:breadcrumbs --><!-- /shared:breadcrumbs -->";
 export const lockup = (link = true) => {
   const content =
     '<img src="/assets/mark.svg" alt="" width="32" height="32" /><span>PubShip</span>';
@@ -30,7 +42,7 @@ const header = (name) => `<header class="header frame">
 const footer = `<div class="footer-surface"><footer class="footer frame">
   <div class="footer-top">
     <div class="footer-intro">${lockup()}<p>Google Play developer workflows in your MCP client. Runs on your computer with your own credentials.</p></div>
-    <nav aria-label="Use"><h2>Use</h2><a href="/#workflows">Workflows</a><a href="/get-started/">Setup guide</a><a href="/permissions/">Permissions</a></nav>
+    <nav aria-label="Use"><h2>Use</h2><a href="/#workflows">Workflows</a><a href="/get-started/">Setup guide</a><a href="/guides/check-google-play-release/">Release guide</a><a href="/permissions/">Permissions</a></nav>
     <nav aria-label="Project"><h2>Project</h2><a href="https://github.com/pubship/pubship" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://github.com/pubship/pubship/releases" target="_blank" rel="noopener noreferrer">Releases ↗</a><a href="https://pypi.org/project/pubship/" target="_blank" rel="noopener noreferrer">PyPI ↗</a><a href="https://github.com/pubship/pubship/issues/new/choose" target="_blank" rel="noopener noreferrer">Report an issue ↗</a></nav>
     <nav aria-label="Legal"><h2>Legal</h2><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/pubship/pubship/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">AGPL-3.0-only ↗</a></nav>
   </div>
@@ -50,8 +62,10 @@ for (const name of pages) {
   const description = input.match(/name="description"\s+content="([^"]+)"/)[1];
   const url = `https://pubship.dev/${name === "index.html" ? "" : name.replace("index.html", "")}`;
   const metadata = `<!-- shared:metadata -->
+    ${name === "404.html" ? "" : '<meta name="robots" content="max-image-preview:large" />'}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="PubShip" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="${title}" />
     <meta property="og:description" content="${description}" />
     <meta property="og:url" content="${url}" />
@@ -85,6 +99,14 @@ for (const name of pages) {
       /<div class="connection-center">[\s\S]*?<\/div>/,
       `<div class="connection-center">${lockup(false)}<small>LOCAL · STDIO</small></div>`,
     );
+  if (output.includes("<!-- shared:breadcrumbs -->")) {
+    output = output.replace(
+      /<!-- shared:breadcrumbs -->[\s\S]*?<!-- \/shared:breadcrumbs -->/,
+      breadcrumbs(name),
+    );
+  } else {
+    output = output.replace("</header>", `</header>\n${breadcrumbs(name)}`);
+  }
   if (output.includes("<!-- shared:metadata -->")) {
     output = output.replace(
       /<!-- shared:metadata -->[\s\S]*?<!-- \/shared:metadata -->/,
@@ -103,6 +125,23 @@ for (const name of pages) {
       `${name}: shared components are stale; run npm run sync:chrome`,
     );
 }
+// Only real canonical content pages belong in discovery. Do not synthesize
+// lastmod dates from build times; unchanged content has not been modified.
+const sitemapPath = fileURLToPath(
+  new URL("../site/sitemap.xml", import.meta.url),
+);
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages
+  .filter((name) => name !== "404.html")
+  .map(
+    (name) =>
+      `  <url><loc>https://pubship.dev/${name === "index.html" ? "" : name.replace("index.html", "")}</loc></url>`,
+  )
+  .join("\n")}\n</urlset>\n`;
+if (process.argv.includes("--write")) await writeFile(sitemapPath, sitemap);
+else if ((await readFile(sitemapPath, "utf8")) !== sitemap)
+  throw new Error(
+    "sitemap.xml: canonical pages are stale; run npm run sync:chrome",
+  );
 console.log(
   process.argv.includes("--write")
     ? "Shared header, footer, lockup and metadata updated."

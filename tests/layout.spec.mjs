@@ -4,6 +4,7 @@ const widths = [320, 375, 768, 1024, 1280, 1440, 1920];
 const paths = [
   "/",
   "/get-started/",
+  "/guides/check-google-play-release/",
   "/permissions/",
   "/privacy/",
   "/terms/",

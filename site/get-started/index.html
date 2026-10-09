@@ -4,19 +4,24 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#f7f4ec" />
-    <title>Get started · PubShip</title>
+    <title>Set up an MCP server for Google Play · PubShip</title>
     <meta
       name="description"
-      content="Install PubShip locally, configure your Google access and connect your MCP client for a first read."
+      content="Install PubShip with uvx, configure Google Play service-account access and connect Claude Code, Codex, Cursor or Gemini CLI. Verify your first read without changes."
     />
     <link rel="canonical" href="https://pubship.dev/get-started/" />
     <!-- shared:metadata -->
+    <meta name="robots" content="max-image-preview:large" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="PubShip" />
-    <meta property="og:title" content="Get started · PubShip" />
+    <meta property="og:locale" content="en_US" />
+    <meta
+      property="og:title"
+      content="Set up an MCP server for Google Play · PubShip"
+    />
     <meta
       property="og:description"
-      content="Install PubShip locally, configure your Google access and connect your MCP client for a first read."
+      content="Install PubShip with uvx, configure Google Play service-account access and connect Claude Code, Codex, Cursor or Gemini CLI. Verify your first read without changes."
     />
     <meta property="og:url" content="https://pubship.dev/get-started/" />
     <meta property="og:image" content="https://pubship.dev/assets/social.png" />
@@ -28,10 +33,13 @@
       content="PubShip. Bring your release workflow into your AI workspace."
     />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Get started · PubShip" />
+    <meta
+      name="twitter:title"
+      content="Set up an MCP server for Google Play · PubShip"
+    />
     <meta
       name="twitter:description"
-      content="Install PubShip locally, configure your Google access and connect your MCP client for a first read."
+      content="Install PubShip with uvx, configure Google Play service-account access and connect Claude Code, Codex, Cursor or Gemini CLI. Verify your first read without changes."
     />
     <meta
       name="twitter:image"
@@ -86,6 +94,33 @@
         >
       </nav>
     </header>
+    <!-- shared:breadcrumbs -->
+    <nav
+      class="breadcrumbs frame"
+      aria-label="Breadcrumb"
+      itemscope
+      itemtype="https://schema.org/BreadcrumbList"
+    >
+      <ol>
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+        >
+          <a itemprop="item" href="/"><span itemprop="name">Home</span></a
+          ><meta itemprop="position" content="1" />
+        </li>
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+        >
+          <span itemprop="name" aria-current="page">Setup guide</span
+          ><meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </nav>
+    <!-- /shared:breadcrumbs -->
     <main id="main" tabindex="-1" class="main-content">
       <section aria-labelledby="start-title" class="setup-hero">
         <div class="content-frame">
@@ -93,12 +128,13 @@
             <span aria-hidden="true" class="section-square"></span>Setup guide
           </p>
           <h1 id="start-title" class="page-title">
-            From install to your first read.
+            Connect your AI client to Google Play.
           </h1>
           <p class="page-intro">
-            PubShip runs on your computer with your own Google credentials. This
-            is the shortest path. Every step links to the full details on
-            GitHub.
+            Set up PubShip with your own Google Play service account, then
+            connect Claude Code, Codex, Cursor, Gemini CLI or another MCP
+            client. Verify the local installation and make your first read
+            without changing an app.
           </p>
           <ul aria-label="You will need" class="prerequisites">
             <li class="prerequisite">Python 3.11 or later</li>
@@ -682,6 +718,15 @@ codex mcp list</code></pre>
           </div>
         </div>
       </section>
+      <div class="content-frame guide-next">
+        <p>
+          Ready for a useful first workflow?
+          <a href="/guides/check-google-play-release/"
+            >Inspect Production and Internal Testing releases</a
+          >
+          and learn how to interpret the result.
+        </p>
+      </div>
     </main>
     <div class="footer-surface">
       <footer class="footer frame">
@@ -701,6 +746,7 @@ codex mcp list</code></pre>
             <h2>Use</h2>
             <a href="/#workflows">Workflows</a
             ><a href="/get-started/">Setup guide</a
+            ><a href="/guides/check-google-play-release/">Release guide</a
             ><a href="/permissions/">Permissions</a>
           </nav>
           <nav aria-label="Project">
