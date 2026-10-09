@@ -4,13 +4,15 @@ Owner-supplied final assets, 9 October 2026. Tracking: [website #13](https://git
 
 ## Asset mapping
 
-- `site/assets/mark.svg`: supplied transparent SVG, unchanged. Used by the shared header/footer lockups and homepage diagram. Dark surfaces retain the existing monochrome inversion for contrast.
+- `site/assets/mark.svg`: supplied transparent SVG, unchanged. Used by the homepage diagram and as the source for the shared lockup. Dark surfaces retain the existing monochrome inversion for contrast.
 - `site/assets/logo.svg`: supplied white-background SVG, unchanged. Primary SVG favicon and Apple-icon rendering source.
 - `site/assets/logo-1024.png`: supplied white-background PNG, unchanged. Ready for GitHub organization and directory-avatar uploads.
 - `site/assets/logo-transparent.png`: supplied transparent PNG, unchanged.
 - `site/assets/favicon-32.png` and `favicon-16.png`: supplied 32 px and 16 px PNGs, unchanged. The asset renderer must not overwrite them.
 - `site/assets/apple-touch-icon.png`: 180 x 180 rendering of the white-background SVG, preserving the artwork's own padding.
 - `site/assets/social.svg` and `social.png`: existing 1200 x 630 card with the final transparent mark. Its viewBox comes from the source so 512-unit artwork is not clipped by the former 32-unit viewport.
+
+The header/footer use `lockup-mark.svg`, a presentation derivative with a tight `119 86 277 352` viewBox. Its paths, strokes and proportions are unchanged. CSS sizes the symbol's P to the wordmark font's cap height and places the underline below its baseline. Removing the source canvas padding aligns the visible mark with nearby content. Footer navigation headings use the same 44 px row height as the brand link.
 
 ## Source provenance
 

@@ -25,7 +25,7 @@ const breadcrumbs = (name) =>
     : "<!-- shared:breadcrumbs --><!-- /shared:breadcrumbs -->";
 export const lockup = (link = true) => {
   const content =
-    '<img src="/assets/mark.svg" alt="" width="32" height="32" /><span>PubShip</span>';
+    '<img src="/assets/lockup-mark.svg" alt="" width="277" height="352" /><span>PubShip</span>';
   return link
     ? `<a class="brand-lockup" href="/" aria-label="PubShip home">${content}</a>`
     : `<span class="brand-lockup">${content}</span>`;
