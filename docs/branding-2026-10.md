@@ -12,7 +12,7 @@ Owner-supplied final assets, 9 October 2026. Tracking: [website #13](https://git
 - `site/assets/apple-touch-icon.png`: 180 x 180 rendering of the white-background SVG, preserving the artwork's own padding.
 - `site/assets/social.svg` and `social.png`: existing 1200 x 630 card with the final transparent mark. Its viewBox comes from the source so 512-unit artwork is not clipped by the former 32-unit viewport.
 
-The header/footer use `lockup-mark.svg`, a presentation derivative with a tight `119 86 277 352` viewBox. Its paths, strokes and proportions are unchanged. CSS sizes the symbol's P to the wordmark font's cap height and places the underline below its baseline. Removing the source canvas padding aligns the visible mark with nearby content. Footer navigation headings use the same 44 px row height as the brand link.
+The header/footer use `lockup-mark.svg`, a presentation derivative with a tight `119 86 277 352` viewBox. Its paths, strokes and proportions are unchanged. Following owner visual review, CSS retains the symbol's previous visible size (20.625 px total height from the original 30 px square canvas) and vertically centers the wordmark beside it. The 8 px visible gap is retained. Removing the source canvas padding aligns the visible mark with nearby content. Footer navigation headings use the same 44 px row height as the brand link.
 
 ## Source provenance
 
