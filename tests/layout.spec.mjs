@@ -253,13 +253,27 @@ async function anchorLanding(page, target) {
       : anchor.querySelector("h1,h2,h3");
     const headingBox = (heading || anchor).getBoundingClientRect();
     const maximum = document.documentElement.scrollHeight - innerHeight;
-    return (
+    const landed =
       Math.abs(box.top - 24) <= 2 ||
       (allowEndClamp &&
         Math.abs(scrollY - maximum) <= 2 &&
         headingBox.top >= 0 &&
-        headingBox.bottom <= innerHeight)
-    );
+        headingBox.bottom <= innerHeight);
+    // Keep the exact predicate while printing useful geometry on poll failure.
+    return landed
+      ? true
+      : {
+          target: anchor.id,
+          top: box.top,
+          scrollY,
+          maximum,
+          documentHeight: document.documentElement.scrollHeight,
+          headingTop: headingBox.top,
+          headingBottom: headingBox.bottom,
+          fontStatus: document.fonts.status,
+          allowEndClamp,
+          url: location.href,
+        };
   }, allowEndClamp);
 }
 
@@ -392,3 +406,75 @@ for (const path of ["/", "/get-started/"]) {
     }
   });
 }
+
+test("cross-page anchors settle after fonts change during smooth scrolling", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 800 });
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  await page.evaluate(() => document.fonts.ready);
+  await page.goto("/privacy/");
+  // Model a font response arriving during the native fragment animation.
+  // This is fixture latency, not additional assertion time or a settling sleep.
+  await page.route("**/*.woff2", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    await route.continue();
+  });
+  await page.locator('header nav a[href="/#workflows"]').click();
+  await page.evaluate(() => document.fonts.ready);
+  await expect.poll(() => anchorLanding(page, "workflows")).toBe(true);
+});
+
+test("late font completion cancels scripted anchor repair after wheel input", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 800 });
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.addInitScript(() => {
+    window.fragmentRepairs = [];
+    window.wheelInputs = 0;
+    const scrollIntoView = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function (options) {
+      if (this.id === "workflows") window.fragmentRepairs.push(options);
+      return scrollIntoView.call(this, options);
+    };
+    window.addEventListener(
+      "wheel",
+      () => {
+        window.wheelInputs += 1;
+      },
+      { passive: true },
+    );
+  });
+  await page.goto("/privacy/");
+  let releaseFonts;
+  const fontsReleased = new Promise((resolve) => {
+    releaseFonts = resolve;
+  });
+  await page.route("**/*.woff2", async (route) => {
+    await fontsReleased;
+    await route.continue();
+  });
+  try {
+    await page.locator('header nav a[href="/#workflows"]').click();
+    await expect
+      .poll(() => page.evaluate(() => document.fonts.status))
+      .toBe("loading");
+    await page.mouse.wheel(0, 200);
+    await expect.poll(() => page.evaluate(() => window.wheelInputs)).toBe(1);
+    releaseFonts();
+    await page.evaluate(() => document.fonts.ready);
+    // Observe the queued repair frame. Native fragment behavior may still move
+    // the viewport; the application must not issue its own repair after input.
+    await page.evaluate(
+      () =>
+        new Promise((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(resolve)),
+        ),
+    );
+    expect(await page.evaluate(() => window.fragmentRepairs)).toEqual([]);
+  } finally {
+    releaseFonts();
+  }
+});

@@ -35,6 +35,7 @@ On 9 October 2026, GitHub releases and the public PyPI metadata both showed 0.24
 - Site-wide chrome and social metadata remain generated at development time and committed as static HTML.
 - Workflow and client panels are all readable without JavaScript. Enhancement adds scoped roving keyboard tabs and copy controls with success/failure feedback.
 - Motion is finite and disabled for reduced-motion preferences. Existing anchor aliases remain available, with natural spacing at the document end.
+- Cross-page fragment navigation is reconciled once after page and font loading. This fixes WebKit scrolling to an outdated position when font layout changes during smooth scrolling. User input or a changed destination cancels the correction; same-page navigation remains native.
 - Architecture/copy review checked operation contracts; engineering implemented and reviewed the static components; QA checks all six pages; delivery links documentation, issue and PR.
 
 ## Validation

@@ -75,6 +75,41 @@ for (const button of document.querySelectorAll("[data-copy]")) {
   });
 }
 
+// Cross-page fragment scrolling can precede font layout in WebKit. Reconcile
+// that initial destination once layout is ready, without interrupting the user.
+if (location.hash) {
+  const initialHash = location.hash;
+  let interrupted = false;
+  const interrupt = () => {
+    interrupted = true;
+  };
+  const intentEvents = ["wheel", "touchstart", "pointerdown", "keydown"];
+  for (const event of intentEvents)
+    window.addEventListener(event, interrupt, { passive: true });
+  const loaded =
+    document.readyState === "complete"
+      ? Promise.resolve()
+      : new Promise((resolve) =>
+          window.addEventListener("load", resolve, { once: true }),
+        );
+  loaded
+    .then(() => document.fonts.ready)
+    .then(() =>
+      requestAnimationFrame(() => {
+        for (const event of intentEvents)
+          window.removeEventListener(event, interrupt);
+        if (interrupted || location.hash !== initialHash) return;
+        let id;
+        try {
+          id = decodeURIComponent(initialHash.slice(1));
+        } catch {
+          return;
+        }
+        document.getElementById(id)?.scrollIntoView({ behavior: "instant" });
+      }),
+    );
+}
+
 // Animate one request and response, once. A live reduced-motion change stops it.
 const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
 const diagram = document.querySelector("[data-diagram]");
