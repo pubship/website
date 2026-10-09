@@ -1,0 +1,32 @@
+[
+  {
+    "file": "glama.svg",
+    "source": "https://glama.ai/favicon.svg",
+    "retrieved": "2026-10-09",
+    "sha256": "962bc69dce3f11b6b51bd9ff6893b4574520f0c1df0223bede2ac4c043cb6857"
+  },
+  {
+    "file": "mcp-so.png",
+    "source": "https://mcp.so/logo.png",
+    "retrieved": "2026-10-09",
+    "sha256": "6004a15b99afb4f36da2c48a3084797c92f7332bcb7733d38d7d14ae82176ab4"
+  },
+  {
+    "file": "sourceweft.svg",
+    "source": "https://sourceweft.com/icon.svg",
+    "retrieved": "2026-10-09",
+    "sha256": "aa0113b9024ceca24e809bed667cbaf8c359c0bbe61ef8b1604734d0e99bb61b"
+  },
+  {
+    "file": "github.png",
+    "source": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+    "retrieved": "2026-10-09",
+    "sha256": "6d6ef7bede0416b6ebee2014be5852576dbce89235fe16ea5c44ed01bd522132"
+  },
+  {
+    "file": "mcplookup.png",
+    "source": "https://mcplookup.com/icon.png",
+    "retrieved": "2026-10-09",
+    "sha256": "1993a2261d49826a8024416b802e8159b6135be94aa589b2043b3cb32207f7a8"
+  }
+]

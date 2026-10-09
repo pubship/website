@@ -16,6 +16,12 @@ The social SVG references the same local fonts through a same-origin stylesheet;
 
 The site bundles no npm runtime dependencies, analytics SDKs or Google logo assets. The visual reference was Aeterna; its content, logo and image assets are not redistributed.
 
+## Directory identification marks
+
+The homepage uses the Glama, MCP.so, SourceWeft and MCPLookup icons to identify their linked public PubShip listings. The GitHub mark identifies the Awesome MCP Servers repository hosted on GitHub, not GitHub catalogue approval. Cursor Directory and MCP Servers use plain-text names. Names and marks belong to their respective owners; their inclusion does not imply endorsement or partnership and the website's AGPL license does not relicense these marks.
+
+The local image files retain the downloaded bytes. [Asset provenance](site/assets/directories/provenance.json) records source URLs, retrieval dates and SHA-256 hashes. CSS renders them in monochrome; no third-party image requests or tracking badges are loaded by visitors. See [listing evidence and verification limits](docs/directory-listings.md).
+
 ## Development dependencies
 
 The exact lockfile versions currently declare:
