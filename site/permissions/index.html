@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f4ec" />
+    <title>Permissions and data flow · PubShip</title>
+    <meta
+      name="description"
+      content="Understand PubShip credentials, permission scopes, read defaults and explicit opt-ins for changes."
+    />
+    <link rel="canonical" href="https://pubship.dev/permissions/" />
+    <!-- shared:metadata -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PubShip" />
+    <meta property="og:title" content="Permissions and data flow · PubShip" />
+    <meta
+      property="og:description"
+      content="Understand PubShip credentials, permission scopes, read defaults and explicit opt-ins for changes."
+    />
+    <meta property="og:url" content="https://pubship.dev/permissions/" />
+    <meta property="og:image" content="https://pubship.dev/assets/social.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="PubShip. Bring your release workflow into your AI workspace."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Permissions and data flow · PubShip" />
+    <meta
+      name="twitter:description"
+      content="Understand PubShip credentials, permission scopes, read defaults and explicit opt-ins for changes."
+    />
+    <meta
+      name="twitter:image"
+      content="https://pubship.dev/assets/social.png"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="PubShip. Bring your release workflow into your AI workspace."
+    />
+    <link rel="icon" href="/assets/mark.svg" type="image/svg+xml" sizes="any" />
+    <link
+      rel="icon"
+      href="/assets/favicon-32.png"
+      type="image/png"
+      sizes="32x32"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="/assets/apple-touch-icon.png"
+      sizes="180x180"
+    />
+    <!-- /shared:metadata -->
+    <link rel="stylesheet" href="/assets/site.css" />
+    <script src="/assets/site.js" defer></script>
+    <link rel="describedby" href="/llms.txt" type="text/plain" />
+  </head>
+  <body>
+    <a class="skip" href="#main" tabindex="0">Skip to content</a>
+    <header class="header frame">
+      <a class="brand-lockup" href="/" aria-label="PubShip home"
+        ><img src="/assets/mark.svg" alt="" width="32" height="32" /><span
+          >PubShip</span
+        ></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="/#workflows">Workflows</a>
+        <a href="/get-started/">Setup</a>
+        <a
+          href="https://github.com/pubship/pubship/tree/main/docs"
+          aria-label="Docs, on GitHub"
+          >Docs <span aria-hidden="true">↗</span></a
+        >
+        <a
+          class="header-github"
+          href="https://github.com/pubship/pubship"
+          aria-label="GitHub repository"
+          >GitHub <span aria-hidden="true">↗</span></a
+        >
+      </nav>
+    </header>
+    <main id="main" tabindex="-1" class="main-content">
+      <section aria-labelledby="perm-title" class="permissions-hero">
+        <div class="content-frame">
+          <p class="permissions-eyebrow">
+            <span aria-hidden="true" class="section-square"></span>Permissions
+            and data flow
+          </p>
+          <h1 id="perm-title" class="page-title">
+            Know what PubShip can reach before you connect it.
+          </h1>
+          <p class="permissions-intro">
+            Google decides what your service account may do. Your configuration
+            narrows it further. PubShip never widens either.
+          </p>
+          <dl class="permissions-facts">
+            <div class="permission-fact">
+              <dt class="permission-fact-label">Runs</dt>
+              <dd class="permission-fact-value">
+                On your computer, started by your client
+              </dd>
+            </div>
+            <div class="permission-fact">
+              <dt class="permission-fact-label">Credentials</dt>
+              <dd class="permission-fact-value">
+                Yours, read from a local file path
+              </dd>
+            </div>
+            <div class="permission-fact">
+              <dt class="permission-fact-label">Default</dt>
+              <dd class="permission-fact-value">Reads only</dd>
+            </div>
+            <div class="permission-fact-dark">
+              <dt class="permission-fact-label-inverse">Project-run service</dt>
+              <dd class="permission-fact-value-inverse">None</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section aria-labelledby="path-title" class="request-section">
+        <div class="content-frame">
+          <h2 id="path-title" class="request-title">The path of one request</h2>
+          <p class="request-intro">
+            Local, not offline: PubShip calls Google directly, and the result
+            returns to your client.
+          </p>
+          <ol class="request-steps">
+            <li class="request-card">
+              <span class="request-role">Client</span>
+              <p class="request-number">1</p>
+              <p class="request-copy">
+                You ask. The client calls a PubShip tool, such as list_releases.
+              </p>
+            </li>
+            <li class="request-card-accent">
+              <span class="request-role-accent">PubShip</span>
+              <p class="request-number-inherit">2</p>
+              <p class="request-copy-inherit">
+                Checks the method contract and your app allowlist before any
+                credential is used.
+              </p>
+            </li>
+            <li class="request-card-accent">
+              <span class="request-role-accent">PubShip</span>
+              <p class="request-number-inherit">3</p>
+              <p class="request-copy-inherit">
+                Gets a short-lived token from your configured credentials.
+                Tokens are never printed.
+              </p>
+            </li>
+            <li class="request-card">
+              <span class="request-role">Google</span>
+              <p class="request-number">4</p>
+              <p class="request-copy">
+                Checks the service account's Play Console permissions and
+                answers over HTTPS.
+              </p>
+            </li>
+            <li class="request-card">
+              <span class="request-role">Client</span>
+              <p class="request-number">5</p>
+              <p class="request-copy">
+                PubShip returns the permitted result to your client, with scope
+                and freshness context where available. Your client's data
+                handling applies.
+              </p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section aria-labelledby="layers-title" class="page-section-spacing">
+        <div class="content-frame">
+          <h2 id="layers-title" class="permissions-section-title">
+            Three layers decide access
+          </h2>
+          <div class="next-grid">
+            <div class="access-layer-card">
+              <p class="access-layer-label">The ceiling</p>
+              <h3 class="access-layer-title">Google Cloud and Play Console</h3>
+              <p class="access-layer-copy">
+                API enablement and the service account's permissions. Enforced
+                on every request.
+              </p>
+            </div>
+            <div class="access-layer-card">
+              <p class="access-layer-label">Narrows access</p>
+              <h3 class="access-layer-title">
+                Your <span class="no-wrap">PubShip configuration</span>
+              </h3>
+              <p class="access-layer-copy">
+                Environment allowlists name the apps PubShip may read and,
+                separately, any it may change.
+              </p>
+            </div>
+            <div class="access-layer-card">
+              <p class="access-layer-label">Runs and keeps results</p>
+              <h3 class="access-layer-title">Your MCP client</h3>
+              <p class="access-layer-copy">
+                Starts PubShip, calls its tools and stores the conversation
+                under its own policies.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="optin-title" class="inset-section">
+        <div class="content-frame">
+          <div class="section-heading-row">
+            <h2 id="optin-title" class="permissions-section-title">
+              Reads by default. Changes when you opt in.
+            </h2>
+            <p class="optin-intro">
+              Each workflow has its own opt-in. App-based scopes narrow your
+              read allowlist; account administration uses separate exact
+              account, user, app and method scopes. Google permissions still
+              apply.
+            </p>
+          </div>
+          <div class="optin-grid">
+            <div class="optin-card">
+              <p class="reads-label">
+                Read tools available by default; Google access still needs
+                configuration
+              </p>
+              <ul class="optin-list">
+                <li class="optin-row">
+                  <span class="optin-title"
+                    >Releases, reviews, Android vitals and catalog</span
+                  ><code class="environment-name">GOOGLE_PLAY_PACKAGES</code>
+                </li>
+                <li class="optin-row">
+                  <span class="optin-title"
+                    >Bulk reports (requires your report bucket and Google
+                    bulk-report permission)</span
+                  ><code class="environment-name"
+                    >GOOGLE_PLAY_REPORT_BUCKET</code
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="optin-card">
+              <p class="writes-label">Off until you opt in</p>
+              <ul class="optin-list">
+                <li class="optin-row">
+                  <span class="optin-title"
+                    >Sensitive reads: orders, purchases, testers</span
+                  ><code class="environment-name"
+                    >GOOGLE_PLAY_SENSITIVE_READ_PACKAGES</code
+                  >
+                </li>
+                <li class="optin-row">
+                  <span class="optin-title">Stage store-listing text</span
+                  ><code class="environment-name"
+                    >GOOGLE_PLAY_WRITE_PACKAGES</code
+                  >
+                </li>
+                <li class="optin-row">
+                  <span class="optin-title">Stage track releases</span
+                  ><code class="environment-name"
+                    >GOOGLE_PLAY_TRACK_PACKAGES</code
+                  >
+                </li>
+                <li class="optin-row">
+                  <span class="optin-title"
+                    >Create, validate, discard or commit edits</span
+                  ><code class="environment-name"
+                    >GOOGLE_PLAY_EDIT_PACKAGES</code
+                  ><span class="optin-note"
+                    >Also requires the app in
+                    <code>GOOGLE_PLAY_WRITE_PACKAGES</code>.</span
+                  >
+                </li>
+                <li class="optin-row">
+                  <span class="optin-title">Other change workflows</span
+                  ><span class="optin-note"
+                    >Edit resources, products, purchases, users, artifacts: each
+                    has its own opt-in.</span
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+          <p class="never-notice">
+            <span class="never-label">Never</span>Voided-purchase data is
+            disabled in every execution path by project policy.
+          </p>
+          <a
+            href="https://github.com/pubship/pubship/blob/main/docs/api-methods.md"
+            class="inventory-link hover-accent"
+            >Every method and its opt-in, on GitHub<span aria-hidden="true"
+              >↗</span
+            ></a
+          >
+        </div>
+      </section>
+
+      <section aria-labelledby="change-title" class="page-section-spacing">
+        <div class="content-frame">
+          <h2 id="change-title" class="permissions-section-title">
+            How a change is applied
+          </h2>
+          <ol class="change-steps">
+            <li class="access-layer-card">
+              <span aria-hidden="true" class="change-number">1</span>
+              <h3 class="change-title">Prepare</h3>
+              <p class="request-copy-inherit">
+                Returns the exact request, its effects and a single-use
+                operation ID. Nothing changes yet.
+              </p>
+            </li>
+            <li class="access-layer-card">
+              <span aria-hidden="true" class="change-number">2</span>
+              <h3 class="change-title">Review</h3>
+              <p class="request-copy-inherit">
+                Check the app, edit and values. Acknowledging records intent; it
+                is not proof of review.
+              </p>
+            </li>
+            <li class="change-card-accent">
+              <span aria-hidden="true" class="change-number-inverse">3</span>
+              <h3 class="change-title-inherit">Apply once</h3>
+              <p class="request-copy-inherit">
+                Same ID as confirmation. PubShip rechecks state and sends the
+                request once. No retries.
+              </p>
+            </li>
+            <li class="access-layer-card">
+              <span aria-hidden="true" class="change-number">4</span>
+              <h3 class="change-title">Read back</h3>
+              <p class="request-copy-inherit">
+                Where supported, a fresh read is reported separately. Staged is
+                not published.
+              </p>
+            </li>
+          </ol>
+          <p class="change-note">
+            Preparations last up to 10 minutes and are lost on restart.
+            Preparations for existing edits also expire with the edit. Listing
+            and track staging do not publish. Committing an edit requires the
+            separate edit lifecycle opt-in; other write workflows can change
+            live resources. If a write’s outcome is uncertain, inspect the
+            current state before preparing again. PubShip does not retry it.
+          </p>
+        </div>
+      </section>
+
+      <section aria-labelledby="more-title" class="inset-section">
+        <div class="evidence-grid">
+          <h2 id="more-title" class="sr-only">
+            Data handling, self-hosting and evidence
+          </h2>
+          <div class="evidence-card">
+            <h3 class="access-layer-title">Where your data goes</h3>
+            <p class="access-layer-copy">
+              From Google to PubShip on your computer, then to your MCP client.
+              Sensitive reads return raw fields, including personal information.
+              The PubShip project receives nothing.
+            </p>
+          </div>
+          <div class="evidence-card">
+            <h3 class="access-layer-title">
+              Self-hosting is for your own accounts
+            </h3>
+            <p class="access-layer-copy">
+              pubship-server needs an exact email allowlist and keeps enrollment
+              closed by default. There is no project endpoint.
+            </p>
+            <a
+              href="https://github.com/pubship/pubship/blob/main/docs/hosting.md"
+              class="setup-doc-link hover-accent"
+              >Self-host guide<span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <div class="evidence-card">
+            <h3 class="access-layer-title">Coverage and evidence</h3>
+            <p class="access-layer-copy">
+              170 implemented methods from 172 inventory definitions. Tests use
+              synthetic providers; implementation is not a claim of live Google
+              verification.
+            </p>
+            <a
+              href="https://github.com/pubship/pubship/blob/main/docs/provider-verification.md"
+              class="setup-doc-link hover-accent"
+              >Verification index<span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+    <div class="footer-surface">
+      <footer class="footer frame">
+        <div class="footer-top">
+          <div class="footer-intro">
+            <a class="brand-lockup" href="/" aria-label="PubShip home"
+              ><img src="/assets/mark.svg" alt="" width="32" height="32" /><span
+                >PubShip</span
+              ></a
+            >
+            <p>
+              Google Play developer workflows in your MCP client. Runs on your
+              computer with your own credentials.
+            </p>
+          </div>
+          <nav aria-label="Use">
+            <h2>Use</h2>
+            <a href="/#workflows">Workflows</a
+            ><a href="/get-started/">Setup guide</a
+            ><a href="/permissions/">Permissions</a>
+          </nav>
+          <nav aria-label="Project">
+            <h2>Project</h2>
+            <a href="https://github.com/pubship/pubship">GitHub ↗</a
+            ><a href="https://github.com/pubship/pubship/releases">Releases ↗</a
+            ><a href="https://pypi.org/project/pubship/">PyPI ↗</a
+            ><a href="https://github.com/pubship/pubship/issues/new/choose"
+              >Report an issue ↗</a
+            >
+          </nav>
+          <nav aria-label="Legal">
+            <h2>Legal</h2>
+            <a href="/privacy/">Privacy</a><a href="/terms/">Terms</a
+            ><a href="https://github.com/pubship/pubship/blob/main/LICENSE"
+              >AGPL-3.0-only ↗</a
+            >
+          </nav>
+        </div>
+        <div class="footer-notices">
+          <p>
+            PubShip is an independent open-source project and is not affiliated
+            with, endorsed by, or sponsored by Google. Google, Google Play and
+            Android are trademarks of Google LLC.
+          </p>
+          <p class="footer-trademark">
+            <span>PubShip™ is a trademark of</span>
+            <span
+              ><a
+                href="https://vorobyov.me"
+                aria-label="Denys Vorobyov, personal website"
+                >Denys Vorobyov</a
+              >.</span
+            >
+          </p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

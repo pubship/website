@@ -4,3 +4,7 @@ node_modules/
 playwright-report/
 test-results/
 artifacts/
+# Original design handoff is reference material, not production source.
+design-assets/
+# Preserve upstream font licenses verbatim.
+site/assets/fonts/*-OFL.txt

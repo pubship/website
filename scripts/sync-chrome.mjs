@@ -5,6 +5,8 @@ import { format } from "prettier";
 // Build-time components. Generated HTML is committed and works without JavaScript.
 const pages = [
   "index.html",
+  "get-started/index.html",
+  "permissions/index.html",
   "privacy/index.html",
   "terms/index.html",
   "404.html",
@@ -16,27 +18,27 @@ export const lockup = (link = true) => {
     ? `<a class="brand-lockup" href="/" aria-label="PubShip home">${content}</a>`
     : `<span class="brand-lockup">${content}</span>`;
 };
-const header = `<header class="header frame">
+const header = (name) => `<header class="header frame">
   ${lockup()}
   <nav aria-label="Main navigation">
-    <a href="/#capabilities">Capabilities</a>
-    <a href="/#principles">How it works</a>
-    <a href="/#start">Get started</a>
+    <a href="/#workflows">Workflows</a>
+    <a href="/get-started/"${name === "get-started/index.html" ? ' aria-current="page"' : ""}>Setup</a>
+    <a href="https://github.com/pubship/pubship/tree/main/docs" aria-label="Docs, on GitHub">Docs <span aria-hidden="true">↗</span></a>
+    <a class="header-github" href="https://github.com/pubship/pubship" aria-label="GitHub repository">GitHub <span aria-hidden="true">↗</span></a>
   </nav>
-  <a class="header-github" href="https://github.com/pubship/pubship">GitHub <span aria-hidden="true">↗</span></a>
 </header>`;
-const footer = `<footer class="footer frame">
-  <div class="footer-identity">
-    ${lockup()}
-    <nav aria-label="Footer">
-      <a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/pubship/pubship">GitHub</a>
-    </nav>
+const footer = `<div class="footer-surface"><footer class="footer frame">
+  <div class="footer-top">
+    <div class="footer-intro">${lockup()}<p>Google Play developer workflows in your MCP client. Runs on your computer with your own credentials.</p></div>
+    <nav aria-label="Use"><h2>Use</h2><a href="/#workflows">Workflows</a><a href="/get-started/">Setup guide</a><a href="/permissions/">Permissions</a></nav>
+    <nav aria-label="Project"><h2>Project</h2><a href="https://github.com/pubship/pubship">GitHub ↗</a><a href="https://github.com/pubship/pubship/releases">Releases ↗</a><a href="https://pypi.org/project/pubship/">PyPI ↗</a><a href="https://github.com/pubship/pubship/issues/new/choose">Report an issue ↗</a></nav>
+    <nav aria-label="Legal"><h2>Legal</h2><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/pubship/pubship/blob/main/LICENSE">AGPL-3.0-only ↗</a></nav>
   </div>
   <div class="footer-notices">
     <p>PubShip is an independent open-source project and is not affiliated with, endorsed by, or sponsored by Google. Google, Google Play and Android are trademarks of Google LLC.</p>
     <p class="footer-trademark"><span>PubShip™ is a trademark of</span> <span><a href="https://vorobyov.me" aria-label="Denys Vorobyov, personal website">Denys Vorobyov</a>.</span></p>
   </div>
-</footer>`;
+</footer></div>`;
 
 for (const name of pages) {
   const path = fileURLToPath(new URL(`../site/${name}`, import.meta.url));
@@ -57,19 +59,28 @@ for (const name of pages) {
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="PubShip mark. Your next release. A clearer workflow." />
+    <meta property="og:image:alt" content="PubShip. Bring your release workflow into your AI workspace." />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${title}" />
     <meta name="twitter:description" content="${description}" />
     <meta name="twitter:image" content="https://pubship.dev/assets/social.png" />
-    <meta name="twitter:image:alt" content="PubShip mark. Your next release. A clearer workflow." />
+    <meta name="twitter:image:alt" content="PubShip. Bring your release workflow into your AI workspace." />
     <link rel="icon" href="/assets/mark.svg" type="image/svg+xml" sizes="any" />
     <link rel="icon" href="/assets/favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" sizes="180x180" />
     <!-- /shared:metadata -->`;
   let output = input
-    .replace(/<header class="header frame">[\s\S]*?<\/header>/, header)
-    .replace(/<footer class="footer frame">[\s\S]*?<\/footer>/, footer)
+    // Explicit tab order keeps the skip link reachable with Safari's default
+    // keyboard navigation preference, which otherwise skips ordinary links.
+    .replace(
+      /<a class="skip" href="#main"(?: tabindex="0")?>/,
+      '<a class="skip" href="#main" tabindex="0">',
+    )
+    .replace(/<header class="header frame">[\s\S]*?<\/header>/, header(name))
+    .replace(
+      /(?:<div class="footer-surface">\s*)?<footer class="footer frame">[\s\S]*?<\/footer>(?:\s*<\/div>)?/,
+      footer,
+    )
     .replace(
       /<div class="connection-center">[\s\S]*?<\/div>/,
       `<div class="connection-center">${lockup(false)}<small>LOCAL · STDIO</small></div>`,
